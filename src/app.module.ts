@@ -5,7 +5,7 @@ import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
 
 import { config } from './config';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailModule } from './module/mail/mail.module';
 import { AwsModule } from './module/oss/oss.module';
 
@@ -18,11 +18,11 @@ const userEntity = config.dbEntity.User;
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'conoblog',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [userEntity],
       synchronize: true,
     }),
