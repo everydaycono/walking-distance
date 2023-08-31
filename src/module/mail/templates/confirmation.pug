@@ -1,0 +1,47 @@
+html
+  head
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #27ae60;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      p {
+        margin: 10px 0;
+      }
+
+  body
+    .container
+      h2(style="color: #333;") Welcome to Our Community!
+      p
+        | Hey #{name}, we're thrilled to welcome you to our website. Your journey with us begins now!
+      p
+        | To become a fully-fledged member, please make sure to click the button below. Your registration
+        | will be complete once you do so.
+      p
+        a.button(href=url) Confirm Email and Join Us
+      p(style="font-style: italic; margin-top: 20px;")
+        | Your feedback and suggestions are always welcome.
+      p(style="margin-top: 20px; font-size: 12px;")
+        | This email was sent to you as part of our service. If you wish to unsubscribe or
+        | update your email preferences, you can do so in your account settings.
+
+      p(style="margin-top: 20px; font-size: 24px;") 🌟
