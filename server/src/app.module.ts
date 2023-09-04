@@ -1,13 +1,14 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { UserModule } from './module/user/user.module';
-import { AuthModule } from './module/auth/auth.module';
+import { UserModule } from "./module/user/user.module";
+import { AuthModule } from "./module/auth/auth.module";
 
-import { config } from './config';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MailModule } from './module/mail/mail.module';
-import { AwsModule } from './module/oss/oss.module';
+import { config } from "./config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { MailModule } from "./module/mail/mail.module";
+import { AwsModule } from "./module/oss/oss.module";
+import { ArticleModule } from "./module/article/article.module";
 
 const userEntity = config.dbEntity.User;
 
@@ -17,7 +18,7 @@ const userEntity = config.dbEntity.User;
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: "mysql",
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
@@ -30,6 +31,7 @@ const userEntity = config.dbEntity.User;
     AuthModule,
     MailModule,
     AwsModule,
+    ArticleModule,
   ],
 })
 export class AppModule {}
