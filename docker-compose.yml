@@ -17,8 +17,7 @@ services:
     container_name: workspace-server
     build:
       context: ./server
-      dockerfile: Dockerfile
-      target: development
+      dockerfile: prd.Dockerfile
     depends_on:
       - mysql
     env_file:
