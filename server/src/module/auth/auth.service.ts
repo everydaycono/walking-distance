@@ -202,6 +202,10 @@ export class AuthService {
     };
   }
 
+  checkAdmin() {
+    return true;
+  }
+
   async socialLogin(user: socialLoginType, type: 'github' | 'google') {
     // user exist check
     const isExistUser = await this.userRepository.findOne({
