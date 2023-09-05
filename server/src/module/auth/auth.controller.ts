@@ -41,8 +41,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({
     status: 201,
-    description: 'The found record',
-    type: User,
+    description: 'Created user',
   })
   @UseInterceptors(ClassSerializerInterceptor) // password 제거.
   @HttpCode(HttpStatus.CREATED)
@@ -76,7 +75,7 @@ export class AuthController {
     if (!verifyToken) {
       throw new HttpException(
         'Verify token is required',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
     return this.authService.verifyEmail(verifyToken);
