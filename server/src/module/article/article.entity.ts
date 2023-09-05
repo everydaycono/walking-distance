@@ -18,19 +18,11 @@ export class Article {
   title: string;
 
   @ApiProperty()
-  @Column({ type: "text", default: null })
-  summary: string;
-
-  @ApiProperty()
   @Column({ type: "mediumtext", default: null, charset: "utf8mb4" })
   content: string;
 
   @ApiProperty()
-  @Column({ type: "mediumtext", default: null })
-  toc: string;
-
-  @ApiProperty()
-  @Column("simple-enum", { enum: ["draft", "publish"] })
+  @Column("simple-enum", { enum: ["draft", "publish"], default: "draft" })
   status: string;
 
   @ApiProperty()
@@ -50,10 +42,6 @@ export class Article {
   isCommentable: boolean;
 
   @ApiProperty()
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  publishAt: Date;
-
-  @ApiProperty()
   @CreateDateColumn({
     type: "datetime",
     comment: "create time",
@@ -64,7 +52,7 @@ export class Article {
   @ApiProperty()
   @UpdateDateColumn({
     type: "datetime",
-    comment: "更新时间",
+    comment: "update time",
     name: "update_at",
   })
   updateAt: Date;
