@@ -66,8 +66,11 @@ export class ArticleController {
   })
   @ApiOperation({ summary: "Edit Single Article" })
   @Patch(":id")
-  editSingleArticle(@Param("id") id: string) {
-    return this.articleService.editSingleArticle(id);
+  editSingleArticle(
+    @Param("id") id: string,
+    @Body() article: Partial<Article>
+  ) {
+    return this.articleService.editSingleArticle(id, article);
   }
 
   /**

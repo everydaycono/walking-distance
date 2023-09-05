@@ -76,8 +76,35 @@ export class ArticleService {
   /**
    * edit single article
    */
-  async editSingleArticle(id: string) {
-    return `edit single article ${id}`;
+  async editSingleArticle(id: string, article: Partial<Article>) {
+    const { title, content } = article;
+
+    const existArticle = await this.articleRepository.findOne({
+      where: { id },
+    });
+
+    // if no article with current id
+    if (!existArticle) {
+      throw new HttpException(
+        `article not found with id ${id}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    // if no edit body
+    if (!title && !content) {
+      return {
+        message: "no edit body",
+      };
+    }
+
+    // edit single article
+    return await this.articleRepository
+      .createQueryBuilder()
+      .update(Article)
+      .set({ title, content })
+      .where("id=:id", { id })
+      .execute();
   }
 
   /**
