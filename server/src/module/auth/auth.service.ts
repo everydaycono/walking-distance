@@ -33,7 +33,7 @@ export class AuthService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
-    private mailService: MailService,
+    private mailService: MailService
   ) {}
 
   async register(user: Partial<User>) {
@@ -41,7 +41,7 @@ export class AuthService {
     if (!password || !firstName || !lastName || !email) {
       throw new HttpException(
         'Please enter all required fields',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
 
@@ -76,7 +76,11 @@ export class AuthService {
     delete newUser.emailVerificationToken;
     delete newUser.isEmailVerified;
 
-    return newUser;
+    return {
+      message: 'email verification sent, please verify your email',
+      email: newUser.email,
+      description: `Verify your email We've sent an email to ${newUser.email} to verify  your email and activate your account.`,
+    };
   }
 
   async login(user: LoginUserDto) {
@@ -88,7 +92,7 @@ export class AuthService {
     if (!isExistUser) {
       throw new HttpException(
         'Incorrect user name or password',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NOT_FOUND
       );
     }
 
@@ -96,7 +100,7 @@ export class AuthService {
     if (!isExistUser.isEmailVerified) {
       throw new HttpException(
         'Please verify your email',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
     // Check password
@@ -107,7 +111,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new HttpException(
         'Incorrect user name or password',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NOT_FOUND
       );
     }
 
@@ -123,7 +127,7 @@ export class AuthService {
     // Save refresh token in db
     this.userRepository.update(
       { id: isExistUser.id },
-      { refreshToken: REFRESHTK },
+      { refreshToken: REFRESHTK }
     );
 
     const userInfo = {
@@ -229,7 +233,7 @@ export class AuthService {
     // Save refresh token in db
     this.userRepository.update(
       { id: isExistUser.id },
-      { refreshToken: REFRESHTK },
+      { refreshToken: REFRESHTK }
     );
 
     const userInfo = {
@@ -253,7 +257,7 @@ export class AuthService {
     user: Pick<
       User,
       'email' | 'firstName' | 'lastName' | 'avatar' | 'role' | 'status' | 'id'
-    >,
+    >
   ) {
     return this.jwtService.sign(
       {
@@ -268,7 +272,7 @@ export class AuthService {
       {
         secret: process.env.JWT_SECRET,
         expiresIn: accessTkExpiresIn,
-      },
+      }
     );
   }
 
@@ -280,7 +284,7 @@ export class AuthService {
       {
         secret: process.env.JWT_REFRESH_SECRET,
         expiresIn: refreshTkExpiresIn,
-      },
+      }
     );
   }
 }
