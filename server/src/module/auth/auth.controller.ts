@@ -57,7 +57,7 @@ export class AuthController {
    */
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() user: LoginUserDto) {
+  login(@Body() user: Pick<User, 'email' | 'password'>) {
     return this.authService.login(user);
   }
 
