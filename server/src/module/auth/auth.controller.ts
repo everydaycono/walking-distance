@@ -15,12 +15,15 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginUserDto } from './dto/login-user.dto';
+
 import { RefreshGuard } from './guard/refresh-jwt.guard';
 import { Request as ExpRequest } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtGuard } from './guard/access-jwt.guard';
+import { Roles } from './decorators/roles.decorators';
+import { Role } from './role.enum';
+import { RolesGuard } from './guard/roles.guard';
 
 export interface IuserInfo {
   token: string;
@@ -59,6 +62,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   login(@Body() user: Pick<User, 'email' | 'password'>) {
     return this.authService.login(user);
+  }
+
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post('admin')
+  @HttpCode(HttpStatus.OK)
+  checkAdmin() {
+    return this.authService.checkAdmin();
   }
 
   /**
