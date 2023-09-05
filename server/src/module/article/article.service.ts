@@ -58,7 +58,19 @@ export class ArticleService {
    * get single article
    */
   async getSingleArticle(id: string) {
-    return `get single article ${id}`;
+    const article = await this.articleRepository.findOne({
+      where: { id },
+    });
+
+    // if no article with current id
+    if (!article) {
+      throw new HttpException(
+        `article not found with id ${id}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    return article;
   }
 
   /**
