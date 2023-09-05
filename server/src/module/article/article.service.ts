@@ -41,6 +41,9 @@ export class ArticleService {
    */
   async getAllArticles() {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
+    return await this.articleRepository.find({
+      order: { createAt: "DESC" },
+    });
   }
 
   /**
