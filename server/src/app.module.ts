@@ -1,11 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
-
 import { config } from "./config";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { MailModule } from "./module/mail/mail.module";
 import { AwsModule } from "./module/oss/oss.module";
 import { ArticleModule } from "./module/article/article.module";
