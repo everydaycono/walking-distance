@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -39,10 +40,7 @@ export class AuthService {
   async register(user: Partial<User>) {
     const { firstName, lastName, email, password } = user;
     if (!password || !firstName || !lastName || !email) {
-      throw new HttpException(
-        'Please enter all required fields',
-        HttpStatus.BAD_REQUEST
-      );
+      throw new BadRequestException('Please enter all required fields');
     }
 
     // check if user exists with email

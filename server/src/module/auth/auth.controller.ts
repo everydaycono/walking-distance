@@ -46,7 +46,7 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor) // password 제거.
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  register(@Body() user: CreateUserDto) {
+  register(@Body() user: Partial<User>) {
     return this.authService.register(user);
   }
 
