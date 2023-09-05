@@ -40,7 +40,7 @@ export class ArticleService {
    * get all articles
    */
   async getAllArticles() {
-    return "get all articles";
+    // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
   }
 
   /**
