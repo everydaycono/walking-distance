@@ -81,7 +81,10 @@ export class AuthService {
     };
   }
 
-  async login(user: LoginUserDto) {
+  async login(user: Pick<User, 'email' | 'password'>) {
+    if (!user.email || !user.password) {
+      throw new BadRequestException('Please enter all required fields');
+    }
     // Find exist user with email
     const isExistUser = await this.userRepository.findOne({
       where: { email: user.email },
