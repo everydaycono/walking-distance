@@ -99,18 +99,33 @@ export class ArticleService {
     }
 
     // edit single article
-    return await this.articleRepository
+    await this.articleRepository
       .createQueryBuilder()
       .update(Article)
       .set({ title, content })
       .where("id=:id", { id })
       .execute();
+
+    return { msg: "successfully edited article" };
   }
 
   /**
    * delete single article
    */
   async deleteSingleArticle(id: string) {
-    return `delete single article ${id}`;
+    const existArticle = await this.articleRepository.findOne({
+      where: { id },
+    });
+
+    // if no article with current id
+    if (!existArticle) {
+      throw new HttpException(
+        `article not found with id ${id}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    await this.articleRepository.delete({ id });
+    return { msg: "successfully deleted article" };
   }
 }
