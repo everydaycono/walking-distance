@@ -41,9 +41,17 @@ export class ArticleService {
    */
   async getAllArticles() {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
-    return await this.articleRepository.find({
+    const articles = await this.articleRepository.find({
       order: { createAt: "DESC" },
     });
+
+    // if no articles
+    if (!articles || articles.length === 0) {
+      throw new HttpException("no posted articles", HttpStatus.BAD_REQUEST);
+    }
+
+    // return all articles
+    return articles;
   }
 
   /**
