@@ -8,7 +8,7 @@ import { MailModule } from "./module/mail/mail.module";
 import { AwsModule } from "./module/oss/oss.module";
 import { ArticleModule } from "./module/article/article.module";
 
-const userEntity = config.dbEntity.User;
+const { User, Article } = config.dbEntity;
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ const userEntity = config.dbEntity.User;
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [userEntity],
+      entities: [User, Article],
       synchronize: true,
     }),
     UserModule,
