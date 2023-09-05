@@ -1,4 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from "@nestjs/common";
 import { Repository } from "typeorm";
 import { Article } from "./article.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -12,8 +17,23 @@ export class ArticleService {
   /**
    * create article
    */
-  async create(article: Article) {
-    return "create article";
+  async create(article: Partial<Article>): Promise<Article> {
+    const { title, content } = article;
+
+    // require title and content
+    if (!title || !content) {
+      throw new BadRequestException("title and content are required");
+    }
+
+    // create new article
+    const newArticle = await this.articleRepository.create({ ...article });
+
+    // set status to publish
+    newArticle.status = "publish";
+
+    // save new article
+    await this.articleRepository.save(newArticle);
+    return newArticle;
   }
 
   /**
