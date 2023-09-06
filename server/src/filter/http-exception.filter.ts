@@ -3,7 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus,
+  HttpStatus
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { RedirectException } from './redirect.exception';
@@ -33,7 +33,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         path: request.url,
         message,
         error,
-        data: exception.userInfo,
+        data: exception.userInfo
       });
     }
 
@@ -42,7 +42,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       message,
-      error,
+      error
     });
   }
 }

@@ -10,9 +10,9 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       clientID: configService.get<string>('GITHUB_SOCIAL_LOGIN_CLIENT_ID'),
       clientSecret: configService.get<string>('GITHUB_SOCIAL_LOGIN_SECRET'),
       callbackURL: configService.get<string>(
-        'GITHUB_SOCIAL_LOGIN_CALLBACK_URL',
+        'GITHUB_SOCIAL_LOGIN_CALLBACK_URL'
       ),
-      scope: ['email', 'profile'],
+      scope: ['email', 'profile']
     });
   }
 

@@ -7,6 +7,6 @@ import { AwsModule } from '../oss/oss.module';
 @Module({
   imports: [AwsModule],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService]
 })
 export class UserModule {}

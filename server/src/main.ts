@@ -39,8 +39,8 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-      exceptionFactory: (errors) => new BadRequestException(errors),
-    }),
+      exceptionFactory: (errors) => new BadRequestException(errors)
+    })
   );
 
   /*
