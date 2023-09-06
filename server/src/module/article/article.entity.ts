@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -37,9 +38,9 @@ export class Article {
   likes: number;
 
   @ApiProperty()
-  @ManyToOne(() => Category, (category) => category.articles, { cascade: true })
-  @JoinTable()
-  category: Category;
+  @ManyToOne(() => Category, (category) => category.articles)
+  @JoinColumn([{ name: "category_id", referencedColumnName: "id" }])
+  category: Promise<Category>;
 
   @ApiProperty()
   @Column({ type: "boolean", default: false })
