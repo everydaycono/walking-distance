@@ -8,13 +8,13 @@ import {
   FileTypeValidator,
   UseGuards,
   Post,
-  UploadedFiles,
+  UploadedFiles
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   FileFieldsInterceptor,
   FileInterceptor,
-  FilesInterceptor,
+  FilesInterceptor
 } from '@nestjs/platform-express';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
 
@@ -30,16 +30,16 @@ export class UserController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-        ],
-      }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' })
+        ]
+      })
     )
-    file: Express.Multer.File,
+    file: Express.Multer.File
   ) {
     return this.userService.updateAvatar(
       file.buffer,
       file.originalname,
-      file.mimetype,
+      file.mimetype
     );
   }
 
@@ -51,11 +51,11 @@ export class UserController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-        ],
-      }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' })
+        ]
+      })
     )
-    file: Express.Multer.File,
+    file: Express.Multer.File
   ) {
     return file;
   }
@@ -65,15 +65,15 @@ export class UserController {
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'avatar', maxCount: 3 },
-      { name: 'background', maxCount: 3 },
-    ]),
+      { name: 'background', maxCount: 3 }
+    ])
   )
   uploadFiles(
     @UploadedFiles(new ParseFilePipe())
     files: {
       avatar?: Express.Multer.File[];
       background?: Express.Multer.File[];
-    },
+    }
   ) {
     return files;
   }

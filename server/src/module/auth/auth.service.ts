@@ -3,7 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
@@ -16,7 +16,7 @@ import {
   createRandomToken,
   emailVerificationExpiry,
   refreshTkExpiresIn,
-  updateRandomToken,
+  updateRandomToken
 } from 'src/utils/auth.utils';
 import { IuserInfo } from './auth.controller';
 import { MailService } from '../mail/mail.service';
@@ -46,8 +46,8 @@ export class AuthService {
     // check if user exists with email
     const isUserExist = await this.userRepository.findOne({
       where: {
-        email,
-      },
+        email
+      }
     });
 
     if (isUserExist) {
@@ -65,7 +65,7 @@ export class AuthService {
 
     const newUserInfo = Object.assign(user, {
       emailVerificationToken: hashedToken,
-      emailVerificationExpiry: new Date(Date.now() + emailVerificationExpiry),
+      emailVerificationExpiry: new Date(Date.now() + emailVerificationExpiry)
     });
     const newUser = await this.userRepository.create(newUserInfo);
     await this.userRepository.save(newUser);
@@ -77,7 +77,7 @@ export class AuthService {
     return {
       message: 'email verification sent, please verify your email',
       email: newUser.email,
-      description: `Verify your email We've sent an email to ${newUser.email} to verify  your email and activate your account.`,
+      description: `Verify your email We've sent an email to ${newUser.email} to verify  your email and activate your account.`
     };
   }
 
@@ -87,7 +87,7 @@ export class AuthService {
     }
     // Find exist user with email
     const isExistUser = await this.userRepository.findOne({
-      where: { email: user.email },
+      where: { email: user.email }
     });
 
     if (!isExistUser) {
@@ -107,7 +107,7 @@ export class AuthService {
     // Check password
     const isPasswordCorrect = passwordCompare({
       plainPassword: isExistUser.password,
-      hashedPassword: user.password,
+      hashedPassword: user.password
     });
     if (!isPasswordCorrect) {
       throw new HttpException(
@@ -137,20 +137,20 @@ export class AuthService {
       lastName: isExistUser.lastName,
       avatar: isExistUser.avatar,
       role: isExistUser.role,
-      id: isExistUser.id,
+      id: isExistUser.id
     };
 
     return Object.assign(userInfo, {
       token: {
         access: ACCESSTK,
-        refresh: REFRESHTK,
-      },
+        refresh: REFRESHTK
+      }
     });
   }
 
   async refreshToken(userInfo: IuserInfo) {
     const user = await this.userRepository.findOne({
-      where: { id: userInfo.id, refreshToken: userInfo.token },
+      where: { id: userInfo.id, refreshToken: userInfo.token }
     });
 
     if (!user) {
@@ -169,8 +169,8 @@ export class AuthService {
     return {
       token: {
         access: accessToken,
-        refresh: refreshToken,
-      },
+        refresh: refreshToken
+      }
     };
   }
 
@@ -181,8 +181,8 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: {
         emailVerificationToken: hashToken,
-        emailVerificationExpiry: MoreThan(new Date()),
-      },
+        emailVerificationExpiry: MoreThan(new Date())
+      }
     });
 
     if (!user) {
@@ -198,7 +198,7 @@ export class AuthService {
 
     return {
       isEmailVerified: true,
-      message: 'Email is verified',
+      message: 'Email is verified'
     };
   }
 
@@ -209,14 +209,14 @@ export class AuthService {
   async socialLogin(user: socialLoginType, type: 'github' | 'google') {
     // user exist check
     const isExistUser = await this.userRepository.findOne({
-      where: { email: user.userName, type },
+      where: { email: user.userName, type }
     });
 
     // Client 는 회원가입 창으로 넘김.
     if (!isExistUser) {
       // throw new NotFoundException('User not found, redirect to register page');
       throw new RedirectException({
-        userInfo: { ...user, type },
+        userInfo: { ...user, type }
       });
     }
 
@@ -247,14 +247,14 @@ export class AuthService {
       lastName: isExistUser.lastName,
       avatar: isExistUser.avatar,
       role: isExistUser.role,
-      id: isExistUser.id,
+      id: isExistUser.id
     };
 
     return Object.assign(userInfo, {
       token: {
         access: ACCESSTK,
-        refresh: REFRESHTK,
-      },
+        refresh: REFRESHTK
+      }
     });
   }
 
@@ -272,11 +272,11 @@ export class AuthService {
         avatar: user.avatar,
         role: user.role,
         status: user.status,
-        id: user.id,
+        id: user.id
       },
       {
         secret: process.env.JWT_SECRET,
-        expiresIn: accessTkExpiresIn,
+        expiresIn: accessTkExpiresIn
       }
     );
   }
@@ -284,11 +284,11 @@ export class AuthService {
   generateRefereshToken(user: Pick<User, 'id'>) {
     return this.jwtService.sign(
       {
-        id: user.id,
+        id: user.id
       },
       {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: refreshTkExpiresIn,
+        expiresIn: refreshTkExpiresIn
       }
     );
   }

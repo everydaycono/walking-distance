@@ -9,13 +9,13 @@ export class AwsService {
   bucketName = this.configService.get('AWS_BUCKET_NAME');
   s3 = new S3({
     accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
-    secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+    secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY')
   });
 
   async uploadPublicFile(
     dataBuffer: Buffer,
     filename: string,
-    fileType: string,
+    fileType: string
   ) {
     try {
       const uploadResult = await this.s3
@@ -25,7 +25,7 @@ export class AwsService {
           Key: `${Date.now()}-${filename}`,
           ACL: 'public-read',
           ContentType: fileType,
-          ContentDisposition: 'inline',
+          ContentDisposition: 'inline'
         })
         .promise();
 

@@ -13,9 +13,9 @@ import { GithubStrategy } from './strategy/github.strategy';
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({ global: true }),
-    MailModule,
+    MailModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, GithubStrategy],
+  providers: [AuthService, GithubStrategy]
 })
 export class AuthModule {}

@@ -11,11 +11,11 @@ export class UserService {
       const uploadResult = await this.awsService.uploadPublicFile(
         dataBuffer,
         filename,
-        fileType,
+        fileType
       );
       return {
         message: 'updated done',
-        uploadResult,
+        uploadResult
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

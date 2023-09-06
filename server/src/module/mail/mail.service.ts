@@ -17,8 +17,8 @@ export class MailService {
       context: {
         // ✏️ filling curly brackets with content
         name: `${user.lastName}  ${user.firstName}`,
-        url,
-      },
+        url
+      }
     });
   }
 }

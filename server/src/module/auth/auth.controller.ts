@@ -11,7 +11,7 @@ import {
   Get,
   Query,
   HttpException,
-  Req,
+  Req
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
@@ -44,7 +44,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({
     status: 201,
-    description: 'Created user',
+    description: 'Created user'
   })
   @UseInterceptors(ClassSerializerInterceptor) // password 제거.
   @HttpCode(HttpStatus.CREATED)
@@ -119,7 +119,7 @@ export class AuthController {
     const newUser = {
       id: user.id || user._json.id.toString(),
       userName: user.username,
-      avatar: user.photos[0].value,
+      avatar: user.photos[0].value
     };
     return this.authService.socialLogin(newUser, 'github');
   }

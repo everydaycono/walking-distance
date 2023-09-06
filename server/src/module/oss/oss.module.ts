@@ -5,6 +5,6 @@ import { AwsService } from './oss.service';
 @Module({
   controllers: [AwsController],
   providers: [AwsService],
-  exports: [AwsService],
+  exports: [AwsService]
 })
 export class AwsModule {}

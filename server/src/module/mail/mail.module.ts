@@ -15,23 +15,23 @@ import { join } from 'path';
           secure: true,
           auth: {
             user: process.env.SMTP_MAIL_SERVICE_USER,
-            pass: process.env.SMTP_MAIL_SERVICE_PASS,
-          },
+            pass: process.env.SMTP_MAIL_SERVICE_PASS
+          }
         },
         defaults: {
-          from: '"No Reply" <noreply@example.com>',
+          from: '"No Reply" <noreply@example.com>'
         },
         template: {
           dir: join(__dirname, 'templates'),
           adapter: new PugAdapter(), // or new PugAdapter() or new EjsAdapter()
           options: {
-            strict: true,
-          },
-        },
-      }),
-    }),
+            strict: true
+          }
+        }
+      })
+    })
   ],
   providers: [MailService],
-  exports: [MailService], // 👈 export for DI
+  exports: [MailService] // 👈 export for DI
 })
 export class MailModule {}

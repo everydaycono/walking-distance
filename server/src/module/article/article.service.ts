@@ -2,11 +2,11 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable,
-} from "@nestjs/common";
-import { Repository } from "typeorm";
-import { Article } from "./article.entity";
-import { InjectRepository } from "@nestjs/typeorm";
+  Injectable
+} from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Article } from './article.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ArticleService {
@@ -22,14 +22,14 @@ export class ArticleService {
 
     // require title and content
     if (!title || !content) {
-      throw new BadRequestException("title and content are required");
+      throw new BadRequestException('title and content are required');
     }
 
     // create new article
     const newArticle = await this.articleRepository.create({ ...article });
 
     // set status to publish
-    newArticle.status = "publish";
+    newArticle.status = 'publish';
 
     // save new article
     await this.articleRepository.save(newArticle);
@@ -42,12 +42,12 @@ export class ArticleService {
   async getAllArticles() {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
-      order: { createAt: "DESC" },
+      order: { createAt: 'DESC' }
     });
 
     // if no articles
     if (!articles || articles.length === 0) {
-      throw new HttpException("no posted articles", HttpStatus.BAD_REQUEST);
+      throw new HttpException('no posted articles', HttpStatus.BAD_REQUEST);
     }
 
     // return all articles
@@ -59,7 +59,7 @@ export class ArticleService {
    */
   async getSingleArticle(id: string) {
     const article = await this.articleRepository.findOne({
-      where: { id },
+      where: { id }
     });
 
     // if no article with current id
@@ -80,7 +80,7 @@ export class ArticleService {
     const { title, content } = article;
 
     const existArticle = await this.articleRepository.findOne({
-      where: { id },
+      where: { id }
     });
 
     // if no article with current id
@@ -94,7 +94,7 @@ export class ArticleService {
     // if no edit body
     if (!title && !content) {
       return {
-        message: "no edit body",
+        message: 'no edit body'
       };
     }
 
@@ -103,10 +103,10 @@ export class ArticleService {
       .createQueryBuilder()
       .update(Article)
       .set({ title, content })
-      .where("id=:id", { id })
+      .where('id=:id', { id })
       .execute();
 
-    return { msg: "successfully edited article" };
+    return { msg: 'successfully edited article' };
   }
 
   /**
@@ -114,7 +114,7 @@ export class ArticleService {
    */
   async deleteSingleArticle(id: string) {
     const existArticle = await this.articleRepository.findOne({
-      where: { id },
+      where: { id }
     });
 
     // if no article with current id
@@ -126,6 +126,6 @@ export class ArticleService {
     }
 
     await this.articleRepository.delete({ id });
-    return { msg: "successfully deleted article" };
+    return { msg: 'successfully deleted article' };
   }
 }
