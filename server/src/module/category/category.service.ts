@@ -51,4 +51,22 @@ export class CategoryService {
   async findAll(queryParams) {
     return this.categoryRepository.find();
   }
+
+  /**
+   * find by id category
+   */
+  async findById(id: string) {
+    const existCategory = await this.categoryRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        articles: true,
+      },
+    });
+    if (!existCategory) {
+      throw new HttpException(`Category not found ${id}`, HttpStatus.NOT_FOUND);
+    }
+    return existCategory;
+  }
 }

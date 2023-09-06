@@ -50,4 +50,18 @@ export class CategoryController {
   findAll(@Query() queryParams) {
     return this.categoryService.findAll(queryParams);
   }
+
+  /**
+   * get single categories
+   */
+  @ApiOperation({ summary: "Get single category" })
+  @ApiResponse({
+    status: 200,
+    description: "get single category",
+  })
+  @Get(":id")
+  @HttpCode(HttpStatus.OK)
+  findById(@Param("id") id: string) {
+    return this.categoryService.findById(id);
+  }
 }
