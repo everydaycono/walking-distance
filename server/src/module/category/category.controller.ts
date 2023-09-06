@@ -1,5 +1,15 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Category } from "./category.entity";
 import { Roles } from "../auth/decorators/roles.decorators";
 import { JwtGuard } from "../auth/guard/access-jwt.guard";
@@ -14,15 +24,30 @@ export class CategoryController {
   /**
    * create a new category
    */
+  @ApiOperation({ summary: "Create category" })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: "create a new category",
-    type: [Category],
   })
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
   create(@Body() category: Partial<Category>) {
     return this.categoryService.create(category);
+  }
+
+  /**
+   * get all categories
+   */
+  @ApiOperation({ summary: "Get all categories" })
+  @ApiResponse({
+    status: 200,
+    description: "get all categories",
+  })
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  findAll(@Query() queryParams) {
+    return this.categoryService.findAll(queryParams);
   }
 }

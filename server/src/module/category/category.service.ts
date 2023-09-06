@@ -44,4 +44,11 @@ export class CategoryService {
     await this.categoryRepository.save(newCategory);
     return { newCategory };
   }
+
+  /**
+   * find all categories
+   */
+  async findAll(queryParams) {
+    return this.categoryRepository.find();
+  }
 }
