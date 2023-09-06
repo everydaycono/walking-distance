@@ -3,11 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-
 import { Article } from "../article/article.entity";
 
 @Entity()
@@ -21,12 +21,8 @@ export class Category {
   label: string;
 
   @ApiProperty()
-  @Column()
-  value: string;
-
-  @ApiProperty()
-  @OneToMany(() => Article, (article) => article)
-  articles: Array<Article>;
+  @OneToMany(() => Article, (article) => article.category)
+  articles: Article[];
 
   @ApiProperty()
   @CreateDateColumn({
