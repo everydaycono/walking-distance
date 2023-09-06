@@ -1,0 +1,25 @@
+*/node_moodules
+
+# 빌드 파일
+*.webpack.config.js
+*.babelrc
+*.eslintrc
+*.prettierignore
+*package.json
+*node_modules
+
+# 테스트 파일
+*test.js
+*spec.js
+*test.ts
+*spec.ts
+
+# 로그 파일
+*log.txt
+*access.log
+*error.log
+
+# 기타 파일
+README.md
+LICENSE
+CHANGELOG.md
