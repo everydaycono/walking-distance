@@ -8,9 +8,8 @@ import { MailModule } from "./module/mail/mail.module";
 import { AwsModule } from "./module/oss/oss.module";
 import { ArticleModule } from "./module/article/article.module";
 import { CategoryModule } from "./module/category/category.module";
-import { Category } from "./module/category/category.entity";
 
-const { User, Article } = config.dbEntity;
+const { User, Article, Category } = config.dbEntity;
 
 @Module({
   imports: [
