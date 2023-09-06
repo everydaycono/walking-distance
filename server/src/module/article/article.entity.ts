@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Comment } from '../comment/entities/comment.entity';
 
 @Entity()
 export class Article {
@@ -56,4 +58,7 @@ export class Article {
     name: "update_at",
   })
   updateAt: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 }
