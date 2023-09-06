@@ -3,9 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { Category } from '../category/category.entity';
 
 @Entity()
 export class Article {
@@ -32,6 +36,11 @@ export class Article {
   @ApiProperty()
   @Column({ type: 'int', default: 0 })
   likes: number;
+
+  @ApiProperty()
+  @ManyToOne(() => Category, (category) => category.articles)
+  @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
+  category: Promise<Category>;
 
   @ApiProperty()
   @Column({ type: 'boolean', default: false })

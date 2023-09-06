@@ -7,8 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './module/mail/mail.module';
 import { AwsModule } from './module/oss/oss.module';
 import { ArticleModule } from './module/article/article.module';
+import { CategoryModule } from './module/category/category.module';
 
-const { User, Article } = config.dbEntity;
+const { User, Article, Category } = config.dbEntity;
 
 @Module({
   imports: [
@@ -22,14 +23,15 @@ const { User, Article } = config.dbEntity;
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Article],
+      entities: [User, Article, Category],
       synchronize: true
     }),
     UserModule,
     AuthModule,
     MailModule,
     AwsModule,
-    ArticleModule
+    ArticleModule,
+    CategoryModule
   ]
 })
 export class AppModule {}

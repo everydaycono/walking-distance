@@ -7,12 +7,14 @@ import {
 import { Repository } from 'typeorm';
 import { Article } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
-    private readonly articleRepository: Repository<Article>
+    private readonly articleRepository: Repository<Article>,
+    private readonly categoryService: CategoryService
   ) {}
   /**
    * create article
@@ -20,16 +22,24 @@ export class ArticleService {
   async create(article: Partial<Article>): Promise<Article> {
     const { title, content } = article;
 
+    const categoryId = 'd922b626-d451-472b-ac55-ea4632c55131';
+
+    // find category
+    const existCategory = await this.categoryService.findById(categoryId);
+
     // require title and content
     if (!title || !content) {
       throw new BadRequestException('title and content are required');
     }
 
     // create new article
-    const newArticle = await this.articleRepository.create({ ...article });
+    const newArticle = await this.articleRepository.create({
+      ...article
+    });
 
     // set status to publish
     newArticle.status = 'publish';
+    newArticle.category = Promise.resolve(existCategory);
 
     // save new article
     await this.articleRepository.save(newArticle);
@@ -42,7 +52,8 @@ export class ArticleService {
   async getAllArticles() {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
-      order: { createAt: 'DESC' }
+      order: { createAt: 'DESC' },
+      relations: ['category']
     });
 
     // if no articles
