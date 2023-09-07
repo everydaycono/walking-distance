@@ -36,8 +36,8 @@ export class TagController {
    * find all tag
    */
   @Get()
-  findAll() {
-    return this.tagService.findAll();
+  findAll(@Query() queryParams): Promise<Tag[]> {
+    return this.tagService.findAll(queryParams);
   }
 
   /**

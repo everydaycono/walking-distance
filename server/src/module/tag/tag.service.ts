@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
 import { Repository } from 'typeorm';
@@ -31,12 +36,27 @@ export class TagService {
   /**
    * find all tag
    */
-  async findAll() {
-    const tags = await this.tagRepository.find({
+  async findAll(queryParams): Promise<Tag[]> {
+    let tags;
+    if (!queryParams) {
+      tags = await this.tagRepository.find({
+        relations: {
+          articles: true
+        }
+      });
+    }
+    tags = await this.tagRepository.find({
+      where: {
+        ...queryParams
+      },
       relations: {
         articles: true
       }
     });
+
+    if (!tags) {
+      throw new NotFoundException(`written tags not found `);
+    }
     return tags;
   }
 
