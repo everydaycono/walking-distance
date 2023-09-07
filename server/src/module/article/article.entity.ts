@@ -3,12 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   JoinColumn,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { Comment } from '../comment/entities/comment.entity';
 import { Category } from '../category/category.entity';
 import { Tag } from '../tag/tag.entity';
 
@@ -74,4 +76,7 @@ export class Article {
     name: 'update_at'
   })
   updateAt: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 }

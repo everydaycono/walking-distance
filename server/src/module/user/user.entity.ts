@@ -3,11 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsEmail, MinLength } from 'class-validator';
 
+import { Comment } from '../comment/entities/comment.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -74,4 +76,7 @@ export class User {
     name: 'update_at'
   })
   updateAt: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
