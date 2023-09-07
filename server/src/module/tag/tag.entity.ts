@@ -19,10 +19,6 @@ export class Tag {
   label: string;
 
   @ApiProperty()
-  @Column()
-  value: string;
-
-  @ApiProperty()
   @ManyToMany(() => Article, (article) => article.tags)
   articles: Article[];
 
