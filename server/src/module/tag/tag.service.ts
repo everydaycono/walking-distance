@@ -27,4 +27,11 @@ export class TagService {
 
     return newTag;
   }
+  /**
+   * find all tag
+   */
+  async findAll() {
+    const tags = await this.tagRepository.find();
+    return tags;
+  }
 }
