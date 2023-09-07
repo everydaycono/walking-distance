@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull,  Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
 
 export type CommentType = Partial<Comment> & {
@@ -8,11 +13,25 @@ export type CommentType = Partial<Comment> & {
   parent?: string;
 };
 
+const userInfo = {
+  email: true,
+  firstName: true,
+  lastName: true,
+  avatar: true
+};
+const childParentInfo = {
+  content: true,
+  updateAt: true,
+  createAt: true,
+  id: true,
+  user: userInfo
+};
+
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
+    private readonly commentRepository: Repository<Comment>
   ) {}
   async create(userId: string, articleId: string, commentBody: CommentType) {
     if (!userId || !articleId || !commentBody) {
@@ -25,54 +44,157 @@ export class CommentService {
     }
 
     const { parent, content } = commentBody;
-    
-    
+
     const newComment = this.commentRepository.create({
       content,
       user: { id: userId },
       article: { id: articleId },
       // Only  parent id exist (대댓글)
-      ...(parent ? { parent: { id: parent } } : {}),
+      ...(parent ? { parent: { id: parent } } : {})
     });
 
-    try{
+    try {
       await this.commentRepository.save(newComment);
       return {
         message: 'Comment created successfully',
-        content: newComment.content,
+        content: newComment.content
       };
-    }catch(error){
-      throw new BadRequestException(error)
+    } catch (error) {
+      throw new BadRequestException(error);
     }
-
   }
 
-  async findAll() {
-    const comment = await this.commentRepository.find({
+  async findArticleComments(id: string) {
+    const comments = await this.commentRepository.find({
       where: {
-        article: {
-          id: 'bb8dbcfb-0429-4265-a7da-75b5cdff676b',
-        },
-        parent: IsNull(),
+        article: { id },
+        parent: IsNull()
+      },
+      select: {
+        user: userInfo,
+        children: {
+          content: true,
+          updateAt: true,
+          createAt: true,
+          id: true,
+          user: userInfo
+        }
       },
       relations: {
-        children: true,
+        user: true,
+        children: {
+          user: true
+        }
+      }
+    });
+    return comments;
+  }
+
+  async findComment(id: string) {
+    const comments = await this.commentRepository.findOne({
+      where: {
+        id
       },
+      select: {
+        user: userInfo,
+        children: childParentInfo,
+        parent: childParentInfo
+      },
+      relations: {
+        user: true,
+        children: {
+          user: true
+        },
+        parent: {
+          user: true
+        }
+      }
+    });
+    return comments;
+  }
+
+  async update(
+    id: string,
+    userId: string,
+    updateCommentDto: { content: string }
+  ) {
+    if (!updateCommentDto.content) {
+      throw new BadRequestException('please provide comment body');
+    }
+
+    const oldComment = await this.commentRepository.findOne({
+      where: {
+        id,
+        user: { id: userId }
+      },
+      select: {
+        user: {
+          id: true
+        }
+      },
+      relations: {
+        user: true
+      }
     });
 
-    console.log(comment);
-    return comment;
+    // 유저가 댓글의 작성자 인지 확인
+    // user owner is not allowed to update
+    if (oldComment.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not allowed to update this comment'
+      );
+    }
+
+    try {
+      await this.commentRepository
+        .createQueryBuilder()
+        .update()
+        .set({ content: updateCommentDto.content })
+        .where('id = :id', { id })
+        .execute();
+
+      return {
+        message: 'Comment updated successfully'
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
+  async remove(id: string, userId: string) {
+    const findComment = await this.commentRepository.findOne({
+      where: {
+        id,
+        user: { id: userId }
+      },
+      select: {
+        user: {
+          id: true
+        }
+      },
+      relations: {
+        user: true
+      }
+    });
 
-  update(id: number, updateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+    if (!findComment) {
+      throw new NotFoundException('Comment not found');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+    if (findComment.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not allowed to delete this comment'
+      );
+    }
+
+    try {
+      await this.commentRepository.delete({ id });
+
+      return {
+        message: 'Comment deleted successfully'
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

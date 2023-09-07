@@ -12,7 +12,8 @@ import { passwordCompare, passwordHash } from 'src/utils/user.utils';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import {
-  accessTkExpiresIn,
+  accessTkDevExpiresIn,
+  accessTkPrdExpiresIn,
   createRandomToken,
   emailVerificationExpiry,
   refreshTkExpiresIn,
@@ -276,7 +277,10 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_SECRET,
-        expiresIn: accessTkExpiresIn
+        expiresIn:
+          process.env.NODE_ENV === 'dev'
+            ? accessTkDevExpiresIn
+            : accessTkPrdExpiresIn
       }
     );
   }
