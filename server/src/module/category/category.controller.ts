@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards
@@ -63,5 +64,21 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   findById(@Param('id') id: string) {
     return this.categoryService.findById(id);
+  }
+
+  /**
+   * edit single categories
+   */
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiOperation({ summary: 'Edit single category' })
+  @ApiResponse({
+    status: 200,
+    description: 'edit single category'
+  })
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  editById(@Param('id') id: string, @Body() category: Partial<Category>) {
+    return this.categoryService.editById(id, category);
   }
 }
