@@ -73,4 +73,40 @@ export class CategoryService {
     }
     return existCategory;
   }
+
+  /**
+   * edit by id category
+   */
+  async editById(id: string, category: Partial<Category>) {
+    const { label } = category;
+
+    // find category by id in database
+    const existCategory = this.categoryRepository.findOne({
+      where: {
+        id
+      }
+    });
+
+    // if no category with current id
+    if (!existCategory) {
+      throw new BadRequestException(`Category not found ${id}`);
+    }
+
+    // no edit body
+    if (!label) {
+      return {
+        message: 'no edit body'
+      };
+    }
+
+    // edit single article
+    await this.categoryRepository
+      .createQueryBuilder()
+      .update(Category)
+      .set({ label })
+      .where('id=:id', { id })
+      .execute();
+
+    return { msg: 'successfully edited category' };
+  }
 }
