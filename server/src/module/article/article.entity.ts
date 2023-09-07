@@ -4,13 +4,15 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
   JoinColumn,
-  ManyToOne
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Comment } from '../comment/entities/comment.entity';
 import { Category } from '../category/category.entity';
+import { Tag } from '../tag/tag.entity';
 
 @Entity()
 export class Article {
@@ -42,6 +44,14 @@ export class Article {
   @ManyToOne(() => Category, (category) => category.articles)
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
   category: Promise<Category>;
+
+  @ApiProperty()
+  @ManyToMany(() => Tag, (tag) => tag.articles)
+  @JoinColumn({
+    name: 'tag_id',
+    referencedColumnName: 'id'
+  })
+  tags: Tag[];
 
   @ApiProperty()
   @Column({ type: 'boolean', default: false })

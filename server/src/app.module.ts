@@ -9,8 +9,9 @@ import { AwsModule } from './module/oss/oss.module';
 import { ArticleModule } from './module/article/article.module';
 import { CategoryModule } from './module/category/category.module';
 import { CommentModule } from './module/comment/comment.module';
+import { TagModule } from './module/tag/tag.module';
 
-const { User, Article, Category, Comment } = config.dbEntity;
+const { User, Article, Category, Tag, Comment } = config.dbEntity;
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ const { User, Article, Category, Comment } = config.dbEntity;
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       synchronize: true,
-      entities: [User, Article, Category, Comment]
+      entities: [User, Article, Category, Comment, Tag]
     }),
     UserModule,
     AuthModule,
@@ -33,7 +34,8 @@ const { User, Article, Category, Comment } = config.dbEntity;
     AwsModule,
     ArticleModule,
     CategoryModule,
-    CommentModule
+    CommentModule,
+    TagModule
   ]
 })
 export class AppModule {}

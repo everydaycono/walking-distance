@@ -20,12 +20,14 @@ export class ArticleService {
    * create article
    */
   async create(article: Partial<Article>): Promise<Article> {
-    const { title, content } = article;
-
-    const categoryId = 'd922b626-d451-472b-ac55-ea4632c55131';
+    const { title, content, category } = article;
 
     // find category
-    const existCategory = await this.categoryService.findById(categoryId);
+    const existCategory = await this.categoryService.findById(
+      (
+        await category
+      ).id
+    );
 
     // require title and content
     if (!title || !content) {
