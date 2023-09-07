@@ -1,7 +1,9 @@
 import { randomBytes, createHash } from 'crypto';
 
-export const accessTkExpiresIn = '15m';
+export const accessTkDevExpiresIn = '3h';
+export const accessTkPrdExpiresIn = '15m';
 export const refreshTkExpiresIn = '3d';
+
 export const emailVerificationExpiry = 20 * 60 * 1000; //20mins
 
 export const createRandomToken = randomBytes(20).toString('hex');
