@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -48,7 +49,7 @@ export class CategoryController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@Query() queryParams) {
+  findAll() {
     return this.categoryService.findAll();
   }
 
@@ -80,5 +81,21 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   editById(@Param('id') id: string, @Body() category: Partial<Category>) {
     return this.categoryService.editById(id, category);
+  }
+
+  /**
+   * edit single categories
+   */
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiOperation({ summary: 'Delete single category' })
+  @ApiResponse({
+    status: 200,
+    description: 'delete single category'
+  })
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteById(@Param('id') id: string) {
+    return this.categoryService.deleteById(id);
   }
 }

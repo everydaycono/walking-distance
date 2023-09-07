@@ -2,7 +2,8 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable
+  Injectable,
+  NotFoundException
 } from '@nestjs/common';
 import { Category } from './category.entity';
 import { Repository } from 'typeorm';
@@ -108,5 +109,31 @@ export class CategoryService {
       .execute();
 
     return { msg: 'successfully edited category' };
+  }
+
+  /**
+   * delete by id category
+   */
+  async deleteById(id: string) {
+    const existCategory = await this.categoryRepository.findOne({
+      where: { id },
+      relations: {
+        articles: true
+      }
+    });
+
+    // if no article with current id
+    if (!existCategory) {
+      throw new NotFoundException(`Category not found with id ${id}`);
+    }
+
+    // 현재 category를 사용하고있는 article이 있을경우 못지운다는 에러
+    if (existCategory.articles.length !== 0) {
+      throw new HttpException('Category has articles', HttpStatus.BAD_REQUEST);
+    }
+
+    // delete single category
+    await this.categoryRepository.delete({ id });
+    return { msg: 'successfully deleted category' };
   }
 }
