@@ -23,6 +23,10 @@ export class Tag {
   value: string;
 
   @ApiProperty()
+  @ManyToMany(() => Article, (article) => article.tags)
+  articles: Article[];
+
+  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: 'create time',
