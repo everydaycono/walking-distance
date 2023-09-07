@@ -2,11 +2,11 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable,
-} from "@nestjs/common";
-import { Category } from "./category.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
+  Injectable
+} from '@nestjs/common';
+import { Category } from './category.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CategoryService {
@@ -22,20 +22,20 @@ export class CategoryService {
 
     // require label
     if (!label) {
-      throw new BadRequestException("Label is required");
+      throw new BadRequestException('Label is required');
     }
 
     // find category by label
     const existCategory = await this.categoryRepository.findOne({
       where: {
-        label,
-      },
+        label
+      }
     });
 
     // if exist  throw error
     if (existCategory) {
       throw new HttpException(
-        "Category already exists",
+        'Category already exists',
         HttpStatus.BAD_REQUEST
       );
     }
@@ -48,8 +48,12 @@ export class CategoryService {
   /**
    * find all categories
    */
-  async findAll(queryParams) {
-    return this.categoryRepository.find();
+  async findAll() {
+    return this.categoryRepository.find({
+      relations: {
+        articles: true
+      }
+    });
   }
 
   /**
@@ -58,11 +62,11 @@ export class CategoryService {
   async findById(id: string) {
     const existCategory = await this.categoryRepository.findOne({
       where: {
-        id,
+        id
       },
       relations: {
-        articles: true,
-      },
+        articles: true
+      }
     });
     if (!existCategory) {
       throw new HttpException(`Category not found ${id}`, HttpStatus.NOT_FOUND);
