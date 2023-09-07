@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  OneToMany
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsEmail, MinLength } from 'class-validator';
@@ -17,13 +17,13 @@ export class User {
 
   @Column({ length: 100 })
   @MinLength(3, {
-    message: 'firstName must be at least 3 characters',
+    message: 'firstName must be at least 3 characters'
   })
   firstName: string;
 
   @Column({ length: 100 })
   @MinLength(3, {
-    message: 'lastName must be at least 3 characters',
+    message: 'lastName must be at least 3 characters'
   })
   lastName: string;
 
@@ -37,7 +37,7 @@ export class User {
   @Column({ length: 500, nullable: null })
   @IsEmail()
   @MinLength(5, {
-    message: 'email must be at least 5 characters',
+    message: 'email must be at least 5 characters'
   })
   email: string; // email
 
@@ -66,14 +66,14 @@ export class User {
   @CreateDateColumn({
     type: 'datetime',
     comment: 'Creation time',
-    name: 'create_at',
+    name: 'create_at'
   })
   createAt: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: 'Update time',
-    name: 'update_at',
+    name: 'update_at'
   })
   updateAt: Date;
 

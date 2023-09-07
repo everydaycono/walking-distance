@@ -2,7 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -20,7 +20,7 @@ export class JwtGuard implements CanActivate {
 
     try {
       const payload = (await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_SECRET
       })) as {
         id: string;
       };
@@ -28,7 +28,7 @@ export class JwtGuard implements CanActivate {
       // so that we can access it in our route handlers
       request['userInfo'] = {
         id: payload.id,
-        token,
+        token
       };
     } catch (error) {
       throw new UnauthorizedException(error.message);

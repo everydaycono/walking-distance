@@ -5,14 +5,13 @@ export class LoginUserDto {
   @ApiProperty()
   @IsEmail()
   @MinLength(5, {
-    message: 'email must be at least 5 characters',
+    message: 'email must be at least 5 characters'
   })
   email: string;
 
   @ApiProperty()
   @MinLength(8, {
-    message: 'password must be at least 8 characters',
+    message: 'password must be at least 8 characters'
   })
   password: string;
 }
-

@@ -1,4 +1,4 @@
-import { ArticleService } from "./article.service";
+import { ArticleService } from './article.service';
 import {
   Body,
   Controller,
@@ -7,21 +7,21 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
-} from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Article } from "./article.entity";
-import { JwtGuard } from "../auth/guard/access-jwt.guard";
+  UseGuards
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Article } from './article.entity';
+import { JwtGuard } from '../auth/guard/access-jwt.guard';
 
-@ApiTags("🌳Article")
-@Controller("article")
+@ApiTags('🌳Article')
+@Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
   /**
    * create article
    */
-  @ApiResponse({ status: 201, description: "Create Article", type: [Article] })
-  @ApiOperation({ summary: "Create Article" })
+  @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
+  @ApiOperation({ summary: 'Create Article' })
   @Post()
   // @UseGuards(JwtGuard)
   create(@Body() article) {
@@ -33,10 +33,10 @@ export class ArticleController {
    */
   @ApiResponse({
     status: 200,
-    description: "Get All Articles",
-    type: [Article],
+    description: 'Get All Articles',
+    type: [Article]
   })
-  @ApiOperation({ summary: "Get All Articles" })
+  @ApiOperation({ summary: 'Get All Articles' })
   @Get()
   getAllArticles() {
     return this.articleService.getAllArticles();
@@ -47,12 +47,12 @@ export class ArticleController {
    */
   @ApiResponse({
     status: 200,
-    description: "Get Single Article",
-    type: [Article],
+    description: 'Get Single Article',
+    type: [Article]
   })
-  @ApiOperation({ summary: "Get Single Article" })
-  @Get(":id")
-  getSingleArticle(@Param("id") id: string) {
+  @ApiOperation({ summary: 'Get Single Article' })
+  @Get(':id')
+  getSingleArticle(@Param('id') id: string) {
     return this.articleService.getSingleArticle(id);
   }
 
@@ -61,13 +61,13 @@ export class ArticleController {
    */
   @ApiResponse({
     status: 200,
-    description: "Edit Single Article",
-    type: [Article],
+    description: 'Edit Single Article',
+    type: [Article]
   })
-  @ApiOperation({ summary: "Edit Single Article" })
-  @Patch(":id")
+  @ApiOperation({ summary: 'Edit Single Article' })
+  @Patch(':id')
   editSingleArticle(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() article: Partial<Article>
   ) {
     return this.articleService.editSingleArticle(id, article);
@@ -78,12 +78,12 @@ export class ArticleController {
    */
   @ApiResponse({
     status: 200,
-    description: "Delete Single Article",
-    type: [Article],
+    description: 'Delete Single Article',
+    type: [Article]
   })
-  @ApiOperation({ summary: "Delete Single Article" })
-  @Delete(":id")
-  deleteSingleArticle(@Param("id") id: string) {
+  @ApiOperation({ summary: 'Delete Single Article' })
+  @Delete(':id')
+  deleteSingleArticle(@Param('id') id: string) {
     return this.articleService.deleteSingleArticle(id);
   }
 }
