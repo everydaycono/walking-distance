@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { TagService } from './tag.service';
@@ -20,7 +20,15 @@ export class TagController {
   @Post()
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard)
-  create(@Body() tag) {
+  create(@Body() tag: Partial<Tag>): Promise<Tag> {
     return this.tagService.create(tag);
+  }
+
+  /**
+   * find all tag
+   */
+  @Get()
+  findAll() {
+    return this.tagService.findAll();
   }
 }
