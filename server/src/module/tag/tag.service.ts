@@ -11,7 +11,7 @@ export class TagService {
   /**
    * create tag
    */
-  async create(tag) {
+  async create(tag: Partial<Tag>) {
     const { label } = tag;
 
     // find tag by label
