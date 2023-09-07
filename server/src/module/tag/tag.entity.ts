@@ -3,6 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -20,6 +22,7 @@ export class Tag {
 
   @ApiProperty()
   @ManyToMany(() => Article, (article) => article.tags)
+  @JoinTable()
   articles: Article[];
 
   @ApiProperty()

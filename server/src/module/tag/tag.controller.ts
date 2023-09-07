@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { TagService } from './tag.service';
@@ -30,5 +38,13 @@ export class TagController {
   @Get()
   findAll() {
     return this.tagService.findAll();
+  }
+
+  /**
+   * find single tag
+   */
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.tagService.findById(id);
   }
 }

@@ -27,11 +27,36 @@ export class TagService {
 
     return newTag;
   }
+
   /**
    * find all tag
    */
   async findAll() {
-    const tags = await this.tagRepository.find();
+    const tags = await this.tagRepository.find({
+      relations: {
+        articles: true
+      }
+    });
     return tags;
+  }
+
+  /**
+   * find by tag
+   */
+  async findById(id: string) {
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { id },
+      relations: {
+        articles: true
+      }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new BadRequestException(`Tag not found ${id}`);
+    }
+
+    return existTag;
   }
 }
