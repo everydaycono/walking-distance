@@ -41,7 +41,10 @@ export class CategoryService {
       );
     }
 
+    // create new category
     const newCategory = await this.categoryRepository.create(category);
+
+    // save new category in database
     await this.categoryRepository.save(newCategory);
     return { newCategory };
   }
@@ -61,18 +64,21 @@ export class CategoryService {
    * find by id category
    */
   async findByLabel(label: string) {
+    // find category by label in database
     const existCategory = await this.categoryRepository.findOne({
       where: {
         label
       }
     });
 
+    // if no category database with current label
     if (!existCategory) {
       throw new HttpException(
         `Category not found ${label}`,
         HttpStatus.NOT_FOUND
       );
     }
+
     return existCategory;
   }
 
