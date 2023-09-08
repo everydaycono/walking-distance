@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -31,6 +33,7 @@ export class TagController {
   @Post()
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() tag: Partial<Tag>) {
     return this.tagService.create(tag);
   }
@@ -40,6 +43,7 @@ export class TagController {
    */
   @ApiResponse({ status: 200, description: 'find all tag', type: [Tag] })
   @ApiOperation({ summary: 'Find all Tags' })
+  @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() queryParams): Promise<Tag[]> {
     return this.tagService.findAll(queryParams);
@@ -60,6 +64,7 @@ export class TagController {
    */
   @ApiResponse({ status: 200, description: 'Edit single tag', type: [Tag] })
   @ApiOperation({ summary: 'Edit single Tag' })
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @Roles(Role.ADMIN)
   @Patch(':id')
@@ -73,6 +78,7 @@ export class TagController {
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Delete single tag', type: [Tag] })
   @ApiOperation({ summary: 'Delete single Tag' })
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @Roles(Role.ADMIN)
   deleteById(@Param('id') id: string) {
