@@ -53,4 +53,16 @@ export class TagController {
   findById(@Param('id') id: string) {
     return this.tagService.findById(id);
   }
+
+  /**
+   * edit single tag
+   */
+  @ApiResponse({ status: 200, description: 'Edit single tag', type: [Tag] })
+  @ApiOperation({ summary: 'Edit single Tag' })
+  @UseGuards(JwtGuard)
+  @Roles(Role.ADMIN)
+  @Patch(':id')
+  editById(@Param('id') id: string, @Body() tag) {
+    return this.tagService.editById(id, tag);
+  }
 }

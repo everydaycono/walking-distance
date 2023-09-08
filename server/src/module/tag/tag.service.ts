@@ -78,4 +78,35 @@ export class TagService {
 
     return existTag;
   }
+  /**
+   * edit single tag
+   */
+  async editById(id: string, tag: Partial<Tag>) {
+    const { label } = tag;
+
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { id }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new NotFoundException(`Tag not found ${id}`);
+    }
+
+    // no edit body
+    if (!label) {
+      return 'no edit body';
+    }
+
+    // edit single tag
+    await this.tagRepository
+      .createQueryBuilder()
+      .update(Tag)
+      .set({ label })
+      .where('id=:id', { id })
+      .execute();
+
+    return { msg: 'successfully edited tag' };
+  }
 }
