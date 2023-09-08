@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -23,9 +25,9 @@ export class ArticleController {
    */
   @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
   @ApiOperation({ summary: 'Create Article' })
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
   @Post()
-  // @UseGuards(JwtGuard)
   create(@Body() article: CustomArticleType) {
     return this.articleService.create(article);
   }
@@ -39,6 +41,7 @@ export class ArticleController {
     type: [Article]
   })
   @ApiOperation({ summary: 'Get All Articles' })
+  @HttpCode(HttpStatus.OK)
   @Get()
   getAllArticles() {
     return this.articleService.getAllArticles();
@@ -53,6 +56,7 @@ export class ArticleController {
     type: [Article]
   })
   @ApiOperation({ summary: 'Get Single Article' })
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   getSingleArticle(@Param('id') id: string) {
     return this.articleService.getSingleArticle(id);
@@ -61,6 +65,7 @@ export class ArticleController {
   /**
    * edit single article
    */
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @ApiResponse({
     status: 200,
@@ -80,6 +85,7 @@ export class ArticleController {
    * delete single article
    */
   @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
     description: 'Delete Single Article',

@@ -77,11 +77,13 @@ export class AuthController {
    */
   @UseGuards(RefreshGuard)
   @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
   refreshToken(@Request() req: RequestWithUser) {
     return this.authService.refreshToken(req.userInfo);
   }
 
   @Get('verify-email')
+  @HttpCode(HttpStatus.OK)
   verifyEmail(@Query('token') verifyToken: string) {
     if (!verifyToken) {
       throw new HttpException(

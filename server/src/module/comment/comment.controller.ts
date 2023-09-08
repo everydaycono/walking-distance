@@ -7,7 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req
+  Req,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { CommentService, CommentType } from './comment.service';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
@@ -21,6 +23,7 @@ export class CommentController {
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.CREATED)
   @Post(':id')
   create(
     @Param('id') articleId: string,
@@ -37,6 +40,7 @@ export class CommentController {
    * @returns
    */
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id') commentId: string) {
     return this.commentService.findComment(commentId);
   }
@@ -46,6 +50,7 @@ export class CommentController {
    * @returns
    */
   @Get('article/:id')
+  @HttpCode(HttpStatus.OK)
   findAll(@Param('id') id: string) {
     return this.commentService.findArticleComments(id);
   }
@@ -59,6 +64,7 @@ export class CommentController {
    */
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -77,6 +83,7 @@ export class CommentController {
    */
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req) {
     const userId = req.userInfo.id as string;
