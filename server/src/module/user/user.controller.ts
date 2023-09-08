@@ -8,7 +8,9 @@ import {
   FileTypeValidator,
   UseGuards,
   Post,
-  UploadedFiles
+  UploadedFiles,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
@@ -17,13 +19,21 @@ import {
   FilesInterceptor
 } from '@nestjs/platform-express';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('👩🏻‍💻User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(JwtGuard)
   @Patch('avatar')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update avatar' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update avatar'
+  })
   @UseInterceptors(FileInterceptor('file'))
   updateAvatar(
     @UploadedFile(
@@ -45,6 +55,12 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Post('file')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Upload only one avatar' })
+  @ApiResponse({
+    status: 200,
+    description: 'Upload only one avatar'
+  })
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile(
@@ -61,6 +77,12 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Upload multi Files' })
+  @ApiResponse({
+    status: 200,
+    description: 'Upload multi files'
+  })
   @Post('files')
   @UseInterceptors(
     FileFieldsInterceptor([

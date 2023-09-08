@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -12,6 +14,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
+import { CustomArticleType } from './types/article.type';
 
 @ApiTags('🌳Article')
 @Controller('article')
@@ -22,9 +25,10 @@ export class ArticleController {
    */
   @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
   @ApiOperation({ summary: 'Create Article' })
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtGuard)
   @Post()
-  // @UseGuards(JwtGuard)
-  create(@Body() article) {
+  create(@Body() article: CustomArticleType) {
     return this.articleService.create(article);
   }
 
@@ -37,6 +41,7 @@ export class ArticleController {
     type: [Article]
   })
   @ApiOperation({ summary: 'Get All Articles' })
+  @HttpCode(HttpStatus.OK)
   @Get()
   getAllArticles() {
     return this.articleService.getAllArticles();
@@ -51,6 +56,7 @@ export class ArticleController {
     type: [Article]
   })
   @ApiOperation({ summary: 'Get Single Article' })
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   getSingleArticle(@Param('id') id: string) {
     return this.articleService.getSingleArticle(id);
@@ -59,6 +65,8 @@ export class ArticleController {
   /**
    * edit single article
    */
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtGuard)
   @ApiResponse({
     status: 200,
     description: 'Edit Single Article',
@@ -68,7 +76,7 @@ export class ArticleController {
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
-    @Body() article: Partial<Article>
+    @Body() article: CustomArticleType
   ) {
     return this.articleService.editSingleArticle(id, article);
   }
@@ -76,6 +84,8 @@ export class ArticleController {
   /**
    * delete single article
    */
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
     description: 'Delete Single Article',

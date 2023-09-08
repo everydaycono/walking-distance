@@ -8,7 +8,8 @@ import {
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  JoinTable
 } from 'typeorm';
 import { Comment } from '../comment/entities/comment.entity';
 import { Category } from '../category/category.entity';
@@ -42,15 +43,12 @@ export class Article {
 
   @ApiProperty()
   @ManyToOne(() => Category, (category) => category.articles)
-  @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
-  category: Promise<Category>;
+  @JoinTable()
+  category: Category;
 
   @ApiProperty()
   @ManyToMany(() => Tag, (tag) => tag.articles)
-  @JoinColumn({
-    name: 'tag_id',
-    referencedColumnName: 'id'
-  })
+  @JoinTable()
   tags: Tag[];
 
   @ApiProperty()

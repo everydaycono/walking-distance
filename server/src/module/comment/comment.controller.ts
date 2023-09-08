@@ -7,20 +7,33 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req
+  Req,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { CommentService, CommentType } from './comment.service';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorators';
 import { Role } from '../auth/role.enum';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Comment')
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  /**
+   * create comment
+   */
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create Comment' })
+  @ApiResponse({
+    status: 201,
+    description: 'Create Comment'
+  })
   @Post(':id')
   create(
     @Param('id') articleId: string,
@@ -36,7 +49,14 @@ export class CommentController {
    * @param id
    * @returns
    */
+
+  @ApiOperation({ summary: 'Find Comment by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Find Comment by id'
+  })
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id') commentId: string) {
     return this.commentService.findComment(commentId);
   }
@@ -45,7 +65,13 @@ export class CommentController {
    * article 번호에 관한 댓글
    * @returns
    */
+  @ApiOperation({ summary: 'Find all comments by article' })
+  @ApiResponse({
+    status: 200,
+    description: 'Find all comments by article'
+  })
   @Get('article/:id')
+  @HttpCode(HttpStatus.OK)
   findAll(@Param('id') id: string) {
     return this.commentService.findArticleComments(id);
   }
@@ -59,6 +85,12 @@ export class CommentController {
    */
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update Comment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update Comment'
+  })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -77,6 +109,12 @@ export class CommentController {
    */
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete Comment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Delete Comment'
+  })
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req) {
     const userId = req.userInfo.id as string;

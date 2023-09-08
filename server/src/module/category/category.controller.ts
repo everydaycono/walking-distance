@@ -60,10 +60,10 @@ export class CategoryController {
     status: 200,
     description: 'get single category'
   })
-  @Get(':id')
+  @Get(':label')
   @HttpCode(HttpStatus.OK)
-  findById(@Param('id') id: string) {
-    return this.categoryService.findById(id);
+  findByLabel(@Param('label') label: string) {
+    return this.categoryService.findByLabel(label);
   }
 
   /**

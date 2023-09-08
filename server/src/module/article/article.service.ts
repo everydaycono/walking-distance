@@ -2,32 +2,29 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable
+  Injectable,
+  NotFoundException
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Article } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from '../category/category.service';
+import { TagService } from '../tag/tag.service';
+import { CustomArticleType } from './types/article.type';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly tagService: TagService
   ) {}
   /**
    * create article
    */
-  async create(article: Partial<Article>): Promise<Article> {
-    const { title, content, category } = article;
-
-    // find category
-    const existCategory = await this.categoryService.findById(
-      (
-        await category
-      ).id
-    );
+  async create(article: CustomArticleType) {
+    const { title, content, category, tags } = article;
 
     // require title and content
     if (!title || !content) {
@@ -39,13 +36,39 @@ export class ArticleService {
       ...article
     });
 
+    // find tag
+    if (tags?.length > 0) {
+      await this.findByTag(tags, newArticle);
+    }
+
+    // find category
+    if (category) {
+      await this.findByCategory(category, newArticle);
+    }
+
     // set status to publish
     newArticle.status = 'publish';
-    newArticle.category = Promise.resolve(existCategory);
 
     // save new article
     await this.articleRepository.save(newArticle);
-    return newArticle;
+
+    return { msg: 'successfully created article' };
+  }
+
+  /**
+   * find by tag
+   */
+  async findByTag(tags, article) {
+    const existTag = await this.tagService.findAll(tags);
+    return (article.tags = existTag);
+  }
+
+  /**
+   * find by category
+   */
+  async findByCategory(category, article) {
+    const existCategory = await this.categoryService.findByLabel(category);
+    return (article.category = existCategory);
   }
 
   /**
@@ -55,7 +78,7 @@ export class ArticleService {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
       order: { createAt: 'DESC' },
-      relations: ['category']
+      relations: ['category', 'tags']
     });
 
     // if no articles
@@ -72,7 +95,8 @@ export class ArticleService {
    */
   async getSingleArticle(id: string) {
     const article = await this.articleRepository.findOne({
-      where: { id }
+      where: { id },
+      relations: ['category', 'tags']
     });
 
     // if no article with current id
@@ -89,35 +113,46 @@ export class ArticleService {
   /**
    * edit single article
    */
-  async editSingleArticle(id: string, article: Partial<Article>) {
-    const { title, content } = article;
+  async editSingleArticle(id: string, article: CustomArticleType) {
+    const { title, content, category, tags } = article;
 
+    // find article by id in database
     const existArticle = await this.articleRepository.findOne({
       where: { id }
     });
 
     // if no article with current id
     if (!existArticle) {
-      throw new HttpException(
-        `article not found with id ${id}`,
-        HttpStatus.NOT_FOUND
-      );
+      throw new NotFoundException(`article not found with id ${id}`);
     }
 
     // if no edit body
-    if (!title && !content) {
+    if (!title && !content && !category && !tags) {
       return {
         message: 'no edit body'
       };
     }
 
-    // edit single article
-    await this.articleRepository
-      .createQueryBuilder()
-      .update(Article)
-      .set({ title, content })
-      .where('id=:id', { id })
-      .execute();
+    // Update the article fields
+    if (title) {
+      existArticle.title = title;
+    }
+    if (content) {
+      existArticle.content = content;
+    }
+
+    // find category
+    if (category) {
+      await this.findByCategory(category, existArticle);
+    }
+
+    // find tag
+    if (tags?.length > 0) {
+      await this.findByTag(tags, existArticle);
+    }
+
+    // Save the updated article
+    await this.articleRepository.save(existArticle);
 
     return { msg: 'successfully edited article' };
   }
