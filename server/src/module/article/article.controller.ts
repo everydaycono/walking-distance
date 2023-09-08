@@ -12,7 +12,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
-import { RolesGuard } from '../auth/guard/roles.guard';
+import { CustomArticleType } from './types/article.type';
 
 @ApiTags('🌳Article')
 @Controller('article')
@@ -26,7 +26,7 @@ export class ArticleController {
   @UseGuards(JwtGuard)
   @Post()
   // @UseGuards(JwtGuard)
-  create(@Body() article) {
+  create(@Body() article: CustomArticleType) {
     return this.articleService.create(article);
   }
 
@@ -71,7 +71,7 @@ export class ArticleController {
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
-    @Body() article: Partial<Article>
+    @Body() article: CustomArticleType
   ) {
     return this.articleService.editSingleArticle(id, article);
   }

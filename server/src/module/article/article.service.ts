@@ -9,6 +9,7 @@ import { Article } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from '../category/category.service';
 import { TagService } from '../tag/tag.service';
+import { CustomArticleType } from './types/article.type';
 
 @Injectable()
 export class ArticleService {
@@ -21,7 +22,7 @@ export class ArticleService {
   /**
    * create article
    */
-  async create(article: Partial<Article>) {
+  async create(article: CustomArticleType) {
     const { title, content, category, tags } = article;
 
     // require title and content
@@ -42,12 +43,9 @@ export class ArticleService {
 
     // find category
     if (category) {
-      const existCategory = await this.categoryService.findById(
-        (
-          await category
-        )?.id
-      );
-      newArticle.category = Promise.resolve(existCategory);
+      const existCategory = await this.categoryService.findByLabel(category);
+
+      newArticle.category = existCategory;
     }
 
     // set status to publish
@@ -101,9 +99,10 @@ export class ArticleService {
   /**
    * edit single article
    */
-  async editSingleArticle(id: string, article: Partial<Article>) {
-    const { title, content } = article;
+  async editSingleArticle(id: string, article: CustomArticleType) {
+    const { title, content, category, tags } = article;
 
+    // find article by id in database
     const existArticle = await this.articleRepository.findOne({
       where: { id }
     });
@@ -117,19 +116,35 @@ export class ArticleService {
     }
 
     // if no edit body
-    if (!title && !content) {
+    if (!title && !content && !category && !tags) {
       return {
         message: 'no edit body'
       };
     }
 
-    // edit single article
-    await this.articleRepository
-      .createQueryBuilder()
-      .update(Article)
-      .set({ title, content })
-      .where('id=:id', { id })
-      .execute();
+    // Update the article fields
+    if (title) {
+      existArticle.title = title;
+    }
+    if (content) {
+      existArticle.content = content;
+    }
+
+    // Assuming 'category' and 'tags' are ManyToOne or ManyToMany relations
+    // find category
+    if (category) {
+      const existCategory = await this.categoryService.findByLabel(category);
+      existArticle.category = existCategory;
+    }
+
+    // find tag
+    if (tags?.length > 0) {
+      const existTag = await this.tagService.findAll(tags);
+      existArticle.tags = existTag;
+    }
+
+    // Save the updated article
+    await this.articleRepository.save(existArticle);
 
     return { msg: 'successfully edited article' };
   }
