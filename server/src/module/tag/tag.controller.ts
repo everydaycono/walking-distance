@@ -68,8 +68,7 @@ export class TagController {
   }
 
   /**
-   * 删除标签
-   * @param id
+   * delete single tag
    */
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Delete single tag', type: [Tag] })
