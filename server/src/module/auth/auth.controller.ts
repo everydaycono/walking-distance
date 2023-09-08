@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RefreshGuard } from './guard/refresh-jwt.guard';
 import { Request as ExpRequest } from 'express';
@@ -54,12 +54,15 @@ export class AuthController {
   }
 
   /**
-   *
-   * @param user
-   * @returns
+   * Login
    */
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login User' })
+  @ApiResponse({
+    status: 200,
+    description: 'login user'
+  })
   login(@Body() user: Pick<User, 'email' | 'password'>) {
     return this.authService.login(user);
   }
@@ -68,6 +71,11 @@ export class AuthController {
   @Roles(Role.ADMIN)
   @Post('admin')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Check admin' })
+  @ApiResponse({
+    status: 200,
+    description: 'Check admin'
+  })
   checkAdmin() {
     return this.authService.checkAdmin();
   }
@@ -78,12 +86,22 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get refresh token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get refresh token'
+  })
   refreshToken(@Request() req: RequestWithUser) {
     return this.authService.refreshToken(req.userInfo);
   }
 
   @Get('verify-email')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verify email'
+  })
   verifyEmail(@Query('token') verifyToken: string) {
     if (!verifyToken) {
       throw new HttpException(
@@ -96,6 +114,11 @@ export class AuthController {
 
   @Get('social-login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Github Login Redirect' })
+  @ApiResponse({
+    status: 200,
+    description: 'Github Login'
+  })
   @UseGuards(AuthGuard('github'))
   async socialLogin() {
     return 'redirecting to github...';
@@ -104,6 +127,11 @@ export class AuthController {
   @Get('github-callback')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
+  @ApiOperation({ summary: 'Github Login Callback' })
+  @ApiResponse({
+    status: 200,
+    description: 'Github Login Callback'
+  })
   async githubCallback(@Req() req) {
     const { user } = req as {
       user: {
