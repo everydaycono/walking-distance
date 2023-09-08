@@ -83,7 +83,8 @@ export class ArticleService {
    */
   async getSingleArticle(id: string) {
     const article = await this.articleRepository.findOne({
-      where: { id }
+      where: { id },
+      relations: ['category', 'tags']
     });
 
     // if no article with current id
