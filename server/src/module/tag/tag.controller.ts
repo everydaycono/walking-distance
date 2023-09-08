@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -64,5 +65,18 @@ export class TagController {
   @Patch(':id')
   editById(@Param('id') id: string, @Body() tag) {
     return this.tagService.editById(id, tag);
+  }
+
+  /**
+   * 删除标签
+   * @param id
+   */
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Delete single tag', type: [Tag] })
+  @ApiOperation({ summary: 'Delete single Tag' })
+  @UseGuards(JwtGuard)
+  @Roles(Role.ADMIN)
+  deleteById(@Param('id') id: string) {
+    return this.tagService.deleteById(id);
   }
 }

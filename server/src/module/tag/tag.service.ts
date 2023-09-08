@@ -109,4 +109,31 @@ export class TagService {
 
     return { msg: 'successfully edited tag' };
   }
+
+  /**
+   * delete single tag
+   */
+  async deleteById(id: string) {
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { id },
+      relations: {
+        articles: true
+      }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new NotFoundException(`Tag not found ${id}`);
+    }
+
+    // 현재 tag 사용하고 있는 article이 있을경우 못 지운다는 에러
+    if (existTag?.articles?.length !== 0) {
+      throw new BadRequestException('current tag has articles. cannot delete');
+    }
+
+    // delete single tag
+    await this.tagRepository.remove(existTag);
+    return { msg: 'successfully deleted tag' };
+  }
 }
