@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TagService {
@@ -37,26 +37,25 @@ export class TagService {
    * find all tag
    */
   async findAll(queryParams): Promise<Tag[]> {
+    let tagLabels = queryParams;
     let tags;
-    if (!queryParams) {
+
+    // queryParams가 object인 경우 key값꺼내서 배열로 만들기
+    if (!Array.isArray(queryParams)) {
+      tagLabels = Object.keys(queryParams);
+    }
+    // query filter해야하는게있어서 where in으로 array로 find
+    if (tagLabels.length > 0) {
       tags = await this.tagRepository.find({
-        relations: {
-          articles: true
+        where: {
+          label: In(tagLabels)
         }
       });
+      // queryParams이 존재하지않는경우 전체 결과 조회
+    } else {
+      tags = await this.tagRepository.find();
     }
-    tags = await this.tagRepository.find({
-      where: {
-        ...queryParams
-      },
-      relations: {
-        articles: true
-      }
-    });
 
-    if (!tags) {
-      throw new NotFoundException(`written tags not found `);
-    }
     return tags;
   }
 
