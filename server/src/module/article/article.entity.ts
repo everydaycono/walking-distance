@@ -43,8 +43,8 @@ export class Article {
 
   @ApiProperty()
   @ManyToOne(() => Category, (category) => category.articles)
-  @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
-  category: Promise<Category>;
+  @JoinTable()
+  category: Category;
 
   @ApiProperty()
   @ManyToMany(() => Tag, (tag) => tag.articles)
