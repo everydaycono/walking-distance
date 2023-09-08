@@ -8,7 +8,9 @@ import {
   FileTypeValidator,
   UseGuards,
   Post,
-  UploadedFiles
+  UploadedFiles,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
@@ -24,6 +26,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Patch('avatar')
+  @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
   updateAvatar(
     @UploadedFile(
@@ -45,6 +48,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Post('file')
+  @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile(
@@ -61,6 +65,7 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('files')
   @UseInterceptors(
     FileFieldsInterceptor([
