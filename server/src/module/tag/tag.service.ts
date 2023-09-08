@@ -53,7 +53,11 @@ export class TagService {
       });
       // queryParams이 존재하지않는경우 전체 결과 조회
     } else {
-      tags = await this.tagRepository.find();
+      tags = await this.tagRepository.find({
+        relations: {
+          articles: true
+        }
+      });
     }
 
     return tags;
