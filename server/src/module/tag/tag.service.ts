@@ -30,7 +30,7 @@ export class TagService {
     const newTag = await this.tagRepository.create(tag);
     await this.tagRepository.save(newTag);
 
-    return newTag;
+    return { msg: 'Tag created successfully' };
   }
 
   /**
@@ -62,7 +62,7 @@ export class TagService {
   /**
    * find by tag
    */
-  async findById(id: string) {
+  async findById(id: string): Promise<Tag> {
     // find tag by id in database
     const existTag = await this.tagRepository.findOne({
       where: { id },
