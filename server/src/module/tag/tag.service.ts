@@ -30,7 +30,7 @@ export class TagService {
     const newTag = await this.tagRepository.create(tag);
     await this.tagRepository.save(newTag);
 
-    return newTag;
+    return { msg: 'Tag created successfully' };
   }
 
   /**
@@ -53,7 +53,11 @@ export class TagService {
       });
       // queryParams이 존재하지않는경우 전체 결과 조회
     } else {
-      tags = await this.tagRepository.find();
+      tags = await this.tagRepository.find({
+        relations: {
+          articles: true
+        }
+      });
     }
 
     return tags;
@@ -62,7 +66,7 @@ export class TagService {
   /**
    * find by tag
    */
-  async findById(id: string) {
+  async findById(id: string): Promise<Tag> {
     // find tag by id in database
     const existTag = await this.tagRepository.findOne({
       where: { id },
@@ -77,5 +81,63 @@ export class TagService {
     }
 
     return existTag;
+  }
+  /**
+   * edit single tag
+   */
+  async editById(id: string, tag: Partial<Tag>) {
+    const { label } = tag;
+
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { id }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new NotFoundException(`Tag not found ${id}`);
+    }
+
+    // no edit body
+    if (!label) {
+      return 'no edit body';
+    }
+
+    // edit single tag
+    await this.tagRepository
+      .createQueryBuilder()
+      .update(Tag)
+      .set({ label })
+      .where('id=:id', { id })
+      .execute();
+
+    return { msg: 'successfully edited tag' };
+  }
+
+  /**
+   * delete single tag
+   */
+  async deleteById(id: string) {
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { id },
+      relations: {
+        articles: true
+      }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new NotFoundException(`Tag not found ${id}`);
+    }
+
+    // 현재 tag 사용하고 있는 article이 있을경우 못 지운다는 에러
+    if (existTag?.articles?.length !== 0) {
+      throw new BadRequestException('current tag has articles. cannot delete');
+    }
+
+    // delete single tag
+    await this.tagRepository.remove(existTag);
+    return { msg: 'successfully deleted tag' };
   }
 }
