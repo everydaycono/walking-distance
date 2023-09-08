@@ -2,7 +2,8 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable
+  Injectable,
+  NotFoundException
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Article } from './article.entity';
@@ -37,15 +38,12 @@ export class ArticleService {
 
     // find tag
     if (tags?.length > 0) {
-      const existTag = await this.tagService.findAll(tags);
-      newArticle.tags = existTag;
+      await this.findByTag(tags, newArticle);
     }
 
     // find category
     if (category) {
-      const existCategory = await this.categoryService.findByLabel(category);
-
-      newArticle.category = existCategory;
+      await this.findByCategory(category, newArticle);
     }
 
     // set status to publish
@@ -55,6 +53,22 @@ export class ArticleService {
     await this.articleRepository.save(newArticle);
 
     return { msg: 'successfully created article' };
+  }
+
+  /**
+   * find by tag
+   */
+  async findByTag(tags, article) {
+    const existTag = await this.tagService.findAll(tags);
+    return (article.tags = existTag);
+  }
+
+  /**
+   * find by category
+   */
+  async findByCategory(category, article) {
+    const existCategory = await this.categoryService.findByLabel(category);
+    return (article.category = existCategory);
   }
 
   /**
@@ -109,10 +123,7 @@ export class ArticleService {
 
     // if no article with current id
     if (!existArticle) {
-      throw new HttpException(
-        `article not found with id ${id}`,
-        HttpStatus.NOT_FOUND
-      );
+      throw new NotFoundException(`article not found with id ${id}`);
     }
 
     // if no edit body
@@ -130,17 +141,14 @@ export class ArticleService {
       existArticle.content = content;
     }
 
-    // Assuming 'category' and 'tags' are ManyToOne or ManyToMany relations
     // find category
     if (category) {
-      const existCategory = await this.categoryService.findByLabel(category);
-      existArticle.category = existCategory;
+      await this.findByCategory(category, existArticle);
     }
 
     // find tag
     if (tags?.length > 0) {
-      const existTag = await this.tagService.findAll(tags);
-      existArticle.tags = existTag;
+      await this.findByTag(tags, existArticle);
     }
 
     // Save the updated article
