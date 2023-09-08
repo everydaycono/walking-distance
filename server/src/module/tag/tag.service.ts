@@ -37,8 +37,6 @@ export class TagService {
    * find all tag
    */
   async findAll(queryParams): Promise<Tag[]> {
-    console.log(queryParams, '@@@');
-
     let tagLabels = queryParams;
     let tags;
 
