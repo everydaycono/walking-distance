@@ -12,6 +12,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @ApiTags('🌳Article')
 @Controller('article')
@@ -22,6 +23,7 @@ export class ArticleController {
    */
   @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
   @ApiOperation({ summary: 'Create Article' })
+  @UseGuards(JwtGuard)
   @Post()
   // @UseGuards(JwtGuard)
   create(@Body() article) {
@@ -59,6 +61,7 @@ export class ArticleController {
   /**
    * edit single article
    */
+  @UseGuards(JwtGuard)
   @ApiResponse({
     status: 200,
     description: 'Edit Single Article',
@@ -76,6 +79,7 @@ export class ArticleController {
   /**
    * delete single article
    */
+  @UseGuards(JwtGuard)
   @ApiResponse({
     status: 200,
     description: 'Delete Single Article',
