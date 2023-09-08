@@ -8,26 +8,21 @@ import { Repository } from 'typeorm';
 import { Article } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from '../category/category.service';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly tagService: TagService
   ) {}
   /**
    * create article
    */
-  async create(article: Partial<Article>): Promise<Article> {
-    const { title, content, category } = article;
-
-    // find category
-    const existCategory = await this.categoryService.findById(
-      (
-        await category
-      ).id
-    );
+  async create(article: Partial<Article>) {
+    const { title, content, category, tags } = article;
 
     // require title and content
     if (!title || !content) {
@@ -39,13 +34,29 @@ export class ArticleService {
       ...article
     });
 
+    // find tag
+    if (tags?.length > 0) {
+      const existTag = await this.tagService.findAll(tags);
+      newArticle.tags = existTag;
+    }
+
+    // find category
+    if (category) {
+      const existCategory = await this.categoryService.findById(
+        (
+          await category
+        )?.id
+      );
+      newArticle.category = Promise.resolve(existCategory);
+    }
+
     // set status to publish
     newArticle.status = 'publish';
-    newArticle.category = Promise.resolve(existCategory);
 
     // save new article
     await this.articleRepository.save(newArticle);
-    return newArticle;
+
+    return { msg: 'successfully created article' };
   }
 
   /**
@@ -55,7 +66,7 @@ export class ArticleService {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
       order: { createAt: 'DESC' },
-      relations: ['category']
+      relations: ['category', 'tags']
     });
 
     // if no articles
