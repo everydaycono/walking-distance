@@ -1,23 +1,29 @@
 'use client';
-import { useUserProvider } from '@/components/providers/useUserProvider';
-import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { useSession } from 'next-auth/react';
+import { redirect, useRouter } from 'next/navigation';
+import { FC, Suspense } from 'react';
 
 interface layoutProps {
   children: React.ReactNode;
 }
 
 const AuthLayout: FC<layoutProps> = ({ children }) => {
-  const { user } = useUserProvider();
+  const { status } = useSession();
 
-  const router = useRouter();
-  if (user) {
-    router.replace('/');
-    return;
+  if (status === 'loading') {
+    return <div>Loading</div>;
+  }
+
+  if (status === 'authenticated') {
+    redirect('/');
   }
 
   //   Only not  logged in user can access
-  return <div>{children}</div>;
+  return (
+    <Suspense fallback={<div>Loading</div>}>
+      <section>{children}</section>
+    </Suspense>
+  );
 };
 
 export default AuthLayout;

@@ -1,9 +1,10 @@
 'use client';
-import { useUserProvider } from '@/components/providers/useUserProvider';
+// import { useUserProvider } from '@/components/providers/useUserProvider';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { loginUser } from '@/services/api';
 import { ACCESS_KEY, REFRESH_KEY, USER_INFO } from '@/utils/config';
 import { useMutation } from '@tanstack/react-query';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FC, useState } from 'react';
 
@@ -12,7 +13,8 @@ interface loginProps {}
 const Login: FC<loginProps> = ({}) => {
   const router = useRouter();
 
-  const { handleUserState } = useUserProvider();
+  // 🗑️  11일 까지 삭제 예정
+  // const { handleUserState } = useUserProvider();
 
   const [refreshToken, setRefreshToken] = useLocalStorage(REFRESH_KEY, '');
   const [accToken, setAccessToken] = useLocalStorage(ACCESS_KEY, '');
@@ -25,38 +27,39 @@ const Login: FC<loginProps> = ({}) => {
     id: ''
   });
 
-  const { mutate, data, isLoading, error } = useMutation({
-    mutationFn: () => loginUser(loginValue),
+  // 🗑️  11일 까지 삭제 예정
+  // const { mutate, data, isLoading, error } = useMutation({
+  //   mutationFn: () => loginUser(loginValue),
 
-    onSuccess: (data) => {
-      // login user state change
-      handleUserState(data);
-      setUserInfo({
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        avatar: data.avatar,
-        role: data.role,
-        id: data.id
-      });
-      setRefreshToken(data.token.refresh);
-      setAccessToken(data.token.access);
+  //   onSuccess: (data) => {
+  //     // login user state change
+  //     handleUserState(data);
+  //     setUserInfo({
+  //       email: data.email,
+  //       firstName: data.firstName,
+  //       lastName: data.lastName,
+  //       avatar: data.avatar,
+  //       role: data.role,
+  //       id: data.id
+  //     });
+  //     setRefreshToken(data.token.refresh);
+  //     setAccessToken(data.token.access);
 
-      router.push('/');
-    },
+  //     router.push('/');
+  //   },
 
-    // create error handling
-    onError: (err: Error) => {
-      if (err instanceof Error) {
-        alert(err.message || 'something went wrong');
-        return;
-      }
+  //   // create error handling
+  //   onError: (err: Error) => {
+  //     if (err instanceof Error) {
+  //       alert(err.message || 'something went wrong');
+  //       return;
+  //     }
 
-      // toast notification
-      //@ts-ignore
-      alert(err?.message);
-    }
-  });
+  //     // toast notification
+  //     //@ts-ignore
+  //     alert(err?.message);
+  //   }
+  // });
 
   const [loginValue, setLoginValue] = useState({
     email: '',
@@ -73,7 +76,11 @@ const Login: FC<loginProps> = ({}) => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutate();
+    // provider.id
+    signIn('credentials-login', {
+      email: loginValue.email,
+      password: loginValue.password
+    });
   };
 
   return (
