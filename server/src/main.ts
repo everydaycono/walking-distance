@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { config } from './config';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -57,6 +56,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api-docs', app, document);
   }
-  await app.listen(config.app.port);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
