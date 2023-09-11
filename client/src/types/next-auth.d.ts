@@ -10,6 +10,7 @@ interface IUser {
   token: {
     access: string;
     refresh: string;
+    expiresIn: number;
   };
 }
 /** Example on how to extend the built-in session types */
