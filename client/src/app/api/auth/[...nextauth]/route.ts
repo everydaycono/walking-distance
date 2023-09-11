@@ -1,3 +1,4 @@
+import { tokenEncryptor } from '@/utils/crypto-token';
 import axios, { isAxiosError } from 'axios';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
@@ -20,57 +21,25 @@ interface IUser {
 async function refreshToken(token: JWT): Promise<JWT> {
   const url = `${process.env.SERVER_BASE_URL}/api/auth/refresh-token`;
   const headers = {
-    authorization: `Bearer ${token.user.token.refresh}`
+    authorization: `Bearer ${tokenEncryptor.refreshDecrypt(
+      token.user.token.refresh
+    )}`
   };
 
   const res = await fetch(url, { method: 'POST', headers });
   const response = await res.json();
-  console.log('-------------');
-  console.log('refreshed');
 
   return {
     ...token,
     user: {
       ...token.user,
       token: {
-        access: response.token.access,
-        refresh: response.token.refresh,
+        access: tokenEncryptor.accessEncrypt(response.token.access),
+        refresh: tokenEncryptor.refreshEncrypt(response.token.refresh),
         expiresIn: response.token.expiresIn
       }
     }
   };
-  // try {
-  //   const res = await fetch(url, { method: 'POST', headers });
-  //   const response = await res.json();
-  //   console.log('refreshed');
-
-  //   console.log(response, 'response');
-  //   console.log({
-  //     ...token,
-  //     user: {
-  //       ...token.user,
-  //       token: {
-  //         access: response.token.access,
-  //         refresh: response.token.refresh,
-  //         expiresIn: response.token.expiresIn
-  //       }
-  //     }
-  //   });
-  //   return {
-  //     ...token,
-  //     user: {
-  //       ...token.user,
-  //       token: {
-  //         access: response.token.access,
-  //         refresh: response.token.refresh,
-  //         expiresIn: response.token.expiresIn
-  //       }
-  //     }
-  //   };
-  // } catch (error) {
-  //   console.log(error);
-  //   // throw new Error(error.message);
-  // }
 }
 
 export const authOptions: NextAuthOptions = {
@@ -154,14 +123,18 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      // if (user) {
-      //   console.log('처음로그인');
-      //   return { ...token, ...user };
-      // }
       if (user) {
         // user 의 타입이 정의 되어있지 않습니다.
         //@ts-ignore
         token.user = user; // token 타입은 next-auth.d.ts 에 타입 정의 되어 있습니다.
+        token.user.token.access = tokenEncryptor.accessEncrypt(
+          //@ts-ignore
+          user.token.access
+        );
+        token.user.token.refresh = tokenEncryptor.refreshEncrypt(
+          //@ts-ignore
+          user.token.refresh
+        );
         return token;
       }
 
