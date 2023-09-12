@@ -1,26 +1,25 @@
 'use client';
-import { Button } from '../ui/button';
 import { useTheme } from 'next-themes';
 import { useSession } from 'next-auth/react';
+import { Switch } from '@/components/ui/switch';
 import Avatar from '../Avatar';
+import { Moon, SunMoon } from 'lucide-react';
 
 const Navbar = () => {
   const { data, status: loginStatus } = useSession();
 
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
 
   return (
-    <nav className="bg-white border-b-stone-100  border-[1px] mb-5 dark:bg-gray-900 dark:border-b-gray-300">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav className="border-gray-200 transition-none bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+      <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto py-4 px-4">
         <div className="flex">
-          <h1 className="scale-150">🦮</h1>
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Walking distance
+            WD
           </span>
         </div>
 
-        <Button onClick={() => setTheme('light')}>light</Button>
-        <Button onClick={() => setTheme('dark')}>dark</Button>
+        {/* visible on sm-md size */}
         <button
           data-collapse-toggle="navbar-default"
           type="button"
@@ -45,11 +44,25 @@ const Navbar = () => {
             />
           </svg>
         </button>
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-          {/* USER STATE */}
-          {loginStatus === 'loading' && <Avatar loading={true} />}
-          {loginStatus === 'unauthenticated' && <Avatar />}
-          {loginStatus === 'authenticated' && <Avatar user={data.user} />}
+
+        {/* visible on lg size */}
+        <div className="hidden md:block md:w-auto" id="navbar-default">
+          <div className="flex">
+            <div className="flex items-center space-x-2">
+              <Moon />
+              <Switch
+                id="airplane-mode"
+                checked={theme === 'light' ? true : false}
+                onCheckedChange={(event) => setTheme(event ? 'light' : 'dark')}
+                className="data-[state=checked]:bg-yellow-300 data-[state=unchecked]:bg-gray-200"
+              />
+              <SunMoon />
+            </div>
+            {/* USER STATE */}
+            {loginStatus === 'loading' && <Avatar loading={true} />}
+            {loginStatus === 'unauthenticated' && <Avatar />}
+            {loginStatus === 'authenticated' && <Avatar user={data.user} />}
+          </div>
         </div>
       </div>
     </nav>
