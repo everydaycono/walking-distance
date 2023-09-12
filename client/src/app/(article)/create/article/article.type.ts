@@ -4,3 +4,10 @@ export interface CreateArticleType {
   category: string;
   tags: string[];
 }
+
+export interface CategoryType {
+  id: string;
+  label: string;
+  createdAt: string;
+  updatedAt: string;
+}
