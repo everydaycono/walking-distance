@@ -19,6 +19,17 @@ type loginUserType = {
   };
 };
 
+export type registerType = loginType & {
+  firstName: string;
+  lastName: string;
+};
+
+type registerUserType = {
+  message: string;
+  email: string;
+  description: string;
+};
+
 export const loginUser = async (credentials: loginType) => {
   try {
     // API 호출 로직을 여기에 작성
@@ -30,6 +41,22 @@ export const loginUser = async (credentials: loginType) => {
     );
 
     return data as loginUserType;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw error.response?.data;
+    }
+    throw error;
+  }
+};
+
+export const registerUser = async (credentials: registerType) => {
+  try {
+    const { data } = await api.post(
+      '/api/auth/register',
+      JSON.stringify(credentials)
+    );
+
+    return data as registerUserType;
   } catch (error) {
     if (isAxiosError(error)) {
       throw error.response?.data;
