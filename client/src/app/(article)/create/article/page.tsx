@@ -8,8 +8,13 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/input';
+import { articleValidator } from '@/lib/validators';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { arrayTag } from '@/utils';
 import {
   Form,
   FormControl,
@@ -18,35 +23,68 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { articleValidator } from '@/lib/validators';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { arrayTag } from '@/utils';
+import { CategoryType, CreateArticleType } from './article.type';
+import { categoryAPI } from '@/services/api/categoryQuery';
+import { articleAPI } from '@/services/api/articleQuery';
 
 export default function Page() {
   const [editor, setEditor] = useState('');
+  const [categoryStatus, setCategoryStatus] = useState(false);
+
+  const router = useRouter();
 
   // define my custom form with z
   const form = useForm<z.infer<typeof articleValidator>>({
     resolver: zodResolver(articleValidator)
   });
-  const { handleSubmit, control } = form;
+  const { handleSubmit, control, watch, formState } = form;
+  // tanstack query create article
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data: CreateArticleType) => articleAPI.createArticle(data),
+
+    onError: (error: { response: { data: { message: any } } }) => {
+      console.log(error?.response?.data?.message, 'create article error');
+    },
+    onSuccess: () => {
+      router.push('/article');
+    }
+  });
+
+  // get category from server
+  const { data: categoryData } = useQuery({
+    queryKey: ['getAllCategory'],
+    queryFn: () => categoryAPI.getAllCategory()
+  });
 
   // handle quill editor change
   const handleChange = (value: string) => {
     setEditor(value);
   };
 
-  // onSubmit
+  // hook form onSubmit
   const onSubmit: SubmitHandler<z.infer<typeof articleValidator>> = (data) => {
-    const hashtag = arrayTag(data.tags);
-    const formatData = { ...data, tags: hashtag, content: editor };
-    console.log(formatData, '@@');
+    // convert to arraytag
+    const tags = arrayTag(data.tags);
 
-    // mutate(formatData);
+    // customCategory가 이미 존재하는 category인경우 찾기
+    const existTag: CategoryType = categoryData?.find(
+      (item: CategoryType) => item.label === data.customCategory
+    );
+
+    // 만약 존재하는 경우, category에 해당 customCategory를 삽입
+    if (existTag) {
+      data.category = existTag.label;
+      data.customCategory = undefined;
+    }
+    // format data
+    const formatData = { ...data, tags, content: editor };
+
+    // call react query mutate
+    mutate(formatData);
   };
 
+  // return jsx
+  // -----------------------------------------------------------
   return (
     <div className="m-10">
       <div className="text-4xl font-semibold text-center mb-10">
@@ -72,30 +110,39 @@ export default function Page() {
           />
 
           {/* content quill editor */}
-          <FormItem>
-            <div className="mb-20">
-              <FormLabel>Content</FormLabel>
-              <QuillNoSSRWrapper
-                style={{
-                  height: '300px'
-                }}
-                modules={modules}
-                formats={formats}
-                theme="snow"
-                onChange={handleChange}
-              />
-            </div>
-          </FormItem>
+          <FormField
+            control={control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <div className="mb-5">
+                  <FormLabel>Content</FormLabel>
+                  <FormControl {...field} className="mb-10 pb-3">
+                    <QuillNoSSRWrapper
+                      style={{
+                        height: '280px'
+                      }}
+                      modules={modules}
+                      formats={formats}
+                      theme="snow"
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
 
-          {/* tags */}
+          {/* tag input */}
           <FormField
             control={control}
             name="tags"
             render={({ field }) => (
               <FormItem>
                 <div className="mb-5">
-                  <FormLabel>Tags</FormLabel>
-                  <FormControl className="mt-2">
+                  <FormLabel className="mb-3">Tags</FormLabel>
+                  <FormControl>
                     <Input
                       placeholder="Type tags for article separated by comma"
                       {...field}
@@ -107,7 +154,7 @@ export default function Page() {
             )}
           />
 
-          {/* category */}
+          {/* select category */}
           <FormField
             control={control}
             name="category"
@@ -115,20 +162,59 @@ export default function Page() {
               <FormItem>
                 <div className="mb-5">
                   <FormLabel>Category</FormLabel>
-                  <FormControl className="mt-2">
-                    <Input placeholder="Type category for article" {...field} />
-                  </FormControl>
+                  <select
+                    {...field}
+                    id="small"
+                    className="block w-full p-2 my-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      if (e.target.value === 'custom') {
+                        setCategoryStatus(true);
+                      } else {
+                        setCategoryStatus(false);
+                      }
+                    }}
+                  >
+                    <option value={''}>Choose a Category</option>
+                    <option value={'custom'}>Custom Category</option>
+                    {categoryData?.map((item: CategoryType) => (
+                      <option key={item.id} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
                   <FormMessage />
                 </div>
               </FormItem>
             )}
           />
+
+          {/* input category*/}
+          {categoryStatus && (
+            <FormField
+              control={control}
+              name="customCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="mb-">
+                    <FormControl className="mt-2">
+                      <Input
+                        placeholder="Type only one category you want to create"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
+
           {/* submit button */}
           <Button
-            // disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || watch().category === ''}
             className=" mt-5"
             type="submit"
-            // isLoading={isLoading}
           >
             Create Article
           </Button>
