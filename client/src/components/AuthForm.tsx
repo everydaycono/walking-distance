@@ -4,6 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import Link from 'next/link';
 import { FC, useState } from 'react';
+import LoadingModal from './modal/LoadingModal';
+import { redirect, useRouter } from 'next/navigation';
 
 interface AuthFormProps {
   type: 'register' | 'login';
@@ -32,6 +34,7 @@ const signinText = {
 };
 
 const AuthForm: FC<AuthFormProps> = ({ type }) => {
+  const router = useRouter();
   const {
     mutate: handleRegister,
     isLoading,
@@ -50,7 +53,7 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
       return setSignupError(err.message || 'Something went wrong');
     },
     onSuccess: (suc) => {
-      console.log(suc, 'suc');
+      router.push('/register/check-email');
     }
   });
 
@@ -101,12 +104,9 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
     type === 'register' ? register() : login();
   };
 
-  if (isLoading) {
-    return <div>...Register Loading</div>;
-  }
-
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
+      {isLoading && <LoadingModal />}
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">

@@ -7,7 +7,7 @@ export class MailService {
   constructor(private mailerService: MailerService) {}
 
   async sendUserConfirmation(user: Partial<User>, token: string) {
-    const url = `${process.env.SERVER_API_URL}/auth/verify-email?token=${token}`;
+    const url = `${process.env.CLIENT_URL}/register/verify-email?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
