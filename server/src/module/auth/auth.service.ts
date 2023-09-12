@@ -141,10 +141,17 @@ export class AuthService {
       id: isExistUser.id
     };
 
+    // const devExpriesTime = 3 * 60 * 60 * 1000;
+    const devExpriesTime = 5 * 1000;
+    const prdExpriesTime = 15 * 60 * 1000;
+    const EXPIRE_TIME =
+      process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
+
     return Object.assign(userInfo, {
       token: {
         access: ACCESSTK,
-        refresh: REFRESHTK
+        refresh: REFRESHTK,
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME)
       }
     });
   }
@@ -165,12 +172,20 @@ export class AuthService {
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefereshToken(user);
 
-    this.userRepository.update({ id: user.id }, { refreshToken: refreshToken });
+    // this.userRepository.update({ id: user.id }, { refreshToken: refreshToken });
 
+    // const devExpriesTime = 3 * 60 * 60 * 1000;
+    const devExpriesTime = 5 * 1000;
+    const prdExpriesTime = 15 * 60 * 1000;
+    const EXPIRE_TIME =
+      process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
+
+    console.log('리프레시');
     return {
       token: {
         access: accessToken,
-        refresh: refreshToken
+        refresh: userInfo.token,
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME)
       }
     };
   }

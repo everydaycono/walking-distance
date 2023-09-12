@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
-import UserProvider from '@/components/providers/useUserProvider';
+// import UserProvider from '@/components/providers/useUserProvider';
+import AuthProvider from '@/components/providers/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,9 +23,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <UserProvider>
-            <QueryProvider>{children}</QueryProvider>
-          </UserProvider>
+          {/* 🗑️ 11일 까지 삭제 예정 */}
+          {/* <UserProvider> */}
+          <QueryProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </QueryProvider>
+          {/* </UserProvider> */}
         </ThemeProvider>
       </body>
     </html>
