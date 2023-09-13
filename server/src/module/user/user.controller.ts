@@ -10,7 +10,10 @@ import {
   Post,
   UploadedFiles,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  Get,
+  Req,
+  Param
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
@@ -26,6 +29,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // update avatar
   @UseGuards(JwtGuard)
   @Patch('avatar')
   @HttpCode(HttpStatus.OK)
@@ -53,6 +57,7 @@ export class UserController {
     );
   }
 
+  // upload files
   @UseGuards(JwtGuard)
   @Post('file')
   @HttpCode(HttpStatus.OK)
@@ -76,6 +81,7 @@ export class UserController {
     return file;
   }
 
+  // upload multi files
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Upload multi Files' })
@@ -98,5 +104,32 @@ export class UserController {
     }
   ) {
     return files;
+  }
+
+  // get my articles
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get my all articles' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get my all articles'
+  })
+  @Get('/my/articles')
+  getMyArticles(@Req() req) {
+    const userId = req.userInfo.id as string;
+    return this.userService.getMyArticles(userId);
+  }
+
+  // get other's articles
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get other person articles' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get other person articles'
+  })
+  @Get('/:userId/articles')
+  getPersonArticles(@Param('userId') userId: string) {
+    return this.userService.getPersonArticles(userId);
   }
 }
