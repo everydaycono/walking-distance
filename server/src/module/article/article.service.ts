@@ -26,7 +26,7 @@ export class ArticleService {
   /**
    * create article
    */
-  async create(article: InputArticleType) {
+  async create(article: InputArticleType, userId: string) {
     const { title, content, category, tags } = article;
     const tagEntities: Tag[] = [];
 
@@ -37,7 +37,10 @@ export class ArticleService {
 
     // create new article
     const newArticle = await this.articleRepository.create({
-      ...article
+      ...article,
+      user: {
+        id: userId
+      }
     });
 
     // find category
@@ -104,13 +107,24 @@ export class ArticleService {
     // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
       order: { createAt: 'DESC' },
-      relations: ['category', 'tags']
+      relations: ['category', 'tags', 'user'],
+      select: {
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          avatar: true
+        }
+      }
     });
 
     // if no articles
     if (!articles || articles.length === 0) {
       throw new HttpException('no posted articles', HttpStatus.BAD_REQUEST);
     }
+
+    console.log(articles, '@@find all articles');
 
     // return all articles
     return articles;
@@ -122,7 +136,16 @@ export class ArticleService {
   async getSingleArticle(id: string) {
     const article = await this.articleRepository.findOne({
       where: { id },
-      relations: ['category', 'tags']
+      relations: ['category', 'tags', 'user'],
+      select: {
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          avatar: true
+        }
+      }
     });
 
     // if no article with current id

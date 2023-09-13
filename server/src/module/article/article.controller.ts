@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -28,8 +29,9 @@ export class ArticleController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() article: InputArticleType) {
-    return this.articleService.create(article);
+  create(@Body() article: InputArticleType, @Req() req) {
+    const userId = req.userInfo.id as string;
+    return this.articleService.create(article, userId);
   }
 
   /**
