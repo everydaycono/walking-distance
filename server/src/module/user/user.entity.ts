@@ -1,3 +1,4 @@
+import { Article } from 'src/module/article/article.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -79,4 +80,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
 }
