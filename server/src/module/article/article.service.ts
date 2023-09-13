@@ -105,7 +105,6 @@ export class ArticleService {
    * get all articles
    */
   async getAllArticles() {
-    // TODO: 추후 category, tag에 따른 sort, page, query 로직 추가
     const articles = await this.articleRepository.find({
       order: { createAt: 'DESC' },
       relations: ['category', 'tags', 'user'],
@@ -230,20 +229,33 @@ export class ArticleService {
   /**
    * delete single article
    */
-  async deleteSingleArticle(id: string) {
+  async deleteSingleArticle(articleId: string, userId: string) {
     const existArticle = await this.articleRepository.findOne({
-      where: { id }
+      where: { id: articleId },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true
+        }
+      }
     });
+
+    // article이 주인이 아닐때 throw exception
+    if (existArticle.user.id !== userId) {
+      throw new UnauthorizedException(
+        'Unauthorized access. you are not owner this article.'
+      );
+    }
 
     // if no article with current id
     if (!existArticle) {
       throw new HttpException(
-        `article not found with id ${id}`,
+        `article not found with id ${articleId}`,
         HttpStatus.NOT_FOUND
       );
     }
 
-    await this.articleRepository.delete({ id });
+    await this.articleRepository.delete({ id: articleId });
     return { msg: 'successfully deleted article' };
   }
 }
