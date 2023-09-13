@@ -10,21 +10,25 @@ import { Article } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from '../category/category.service';
 import { TagService } from '../tag/tag.service';
-import { CustomArticleType } from './types/article.type';
+import { InputArticleType } from './types/article.type';
+import { Tag } from '../tag/tag.entity';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
     private readonly categoryService: CategoryService,
     private readonly tagService: TagService
   ) {}
   /**
    * create article
    */
-  async create(article: CustomArticleType) {
+  async create(article: InputArticleType) {
     const { title, content, category, tags } = article;
+    const tagEntities: Tag[] = [];
 
     // require title and content
     if (!title || !content) {
@@ -36,18 +40,22 @@ export class ArticleService {
       ...article
     });
 
-    // find tag
-    if (tags?.length > 0) {
-      await this.findByTag(tags, newArticle);
-    }
-
     // find category
     if (category) {
       await this.findByCategory(category, newArticle);
     }
 
-    // set status to publish
+    // create tag or find tag
+    if (tags.length > 0) {
+      for (const label of tags) {
+        const tagEntity = await this.createOrGetTag(label);
+        tagEntities.push(tagEntity);
+      }
+    }
+
+    // set new article
     newArticle.status = 'publish';
+    newArticle.tags = tagEntities;
 
     // save new article
     await this.articleRepository.save(newArticle);
@@ -61,6 +69,24 @@ export class ArticleService {
   async findByTag(tags, article) {
     const existTag = await this.tagService.findAll(tags);
     return (article.tags = existTag);
+  }
+
+  /**
+   * create or get tag
+   */
+  async createOrGetTag(label: string) {
+    // find tag in database
+    let tagEntity = await this.tagRepository.findOne({
+      where: { label }
+    });
+
+    // Tag가 존재하지 않으면 생성
+    if (!tagEntity) {
+      tagEntity = this.tagRepository.create({ label });
+      await this.tagRepository.save(tagEntity);
+    }
+
+    return tagEntity;
   }
 
   /**
@@ -113,7 +139,7 @@ export class ArticleService {
   /**
    * edit single article
    */
-  async editSingleArticle(id: string, article: CustomArticleType) {
+  async editSingleArticle(id: string, article: InputArticleType) {
     const { title, content, category, tags } = article;
 
     // find article by id in database
