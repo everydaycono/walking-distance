@@ -14,6 +14,7 @@ import {
 import { Comment } from '../comment/entities/comment.entity';
 import { Category } from '../category/category.entity';
 import { Tag } from '../tag/tag.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Article {
@@ -77,4 +78,7 @@ export class Article {
 
   @OneToMany(() => Comment, (comment) => comment.article)
   comments: Comment[];
+
+  @ManyToOne(() => User, (user) => user.articles)
+  user: User;
 }

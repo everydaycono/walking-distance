@@ -32,8 +32,7 @@ export class CategoryController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   create(@Body() category: Partial<Category>) {
     return this.categoryService.create(category);
   }
