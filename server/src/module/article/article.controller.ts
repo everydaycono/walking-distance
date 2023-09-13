@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards
 } from '@nestjs/common';
@@ -45,8 +46,8 @@ export class ArticleController {
   @ApiOperation({ summary: 'Get All Articles' })
   @HttpCode(HttpStatus.OK)
   @Get()
-  getAllArticles() {
-    return this.articleService.getAllArticles();
+  getAllArticles(@Query('status') status) {
+    return this.articleService.getAllArticles(status);
   }
 
   /**
