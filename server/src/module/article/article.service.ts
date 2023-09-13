@@ -28,7 +28,7 @@ export class ArticleService {
    * create article
    */
   async create(article: InputArticleType, userId: string) {
-    const { title, content, category, tags } = article;
+    const { title, content, category, tags, status } = article;
     const tagEntities: Tag[] = [];
 
     // require title and content
@@ -55,12 +55,17 @@ export class ArticleService {
         const tagEntity = await this.createOrGetTag(label);
         tagEntities.push(tagEntity);
       }
+      newArticle.tags = tagEntities;
     }
 
-    // set new article
-    newArticle.status = 'publish';
-    newArticle.tags = tagEntities;
-
+    // article status에 따른 동작
+    if (status === 'draft') {
+      newArticle.status = 'draft';
+    } else if (status === 'onlyme') {
+      newArticle.status = 'onlyme';
+    } else {
+      newArticle.status = 'publish';
+    }
     // save new article
     await this.articleRepository.save(newArticle);
 
