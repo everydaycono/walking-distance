@@ -124,8 +124,6 @@ export class ArticleService {
       throw new HttpException('no posted articles', HttpStatus.BAD_REQUEST);
     }
 
-    console.log(articles, '@@find all articles');
-
     // return all articles
     return articles;
   }
