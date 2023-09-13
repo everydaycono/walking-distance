@@ -112,12 +112,12 @@ export class ArticleService {
   async getAllArticles(status) {
     // find onlyme articles
     if (status === 'onlyme') {
-      return this.getStatusArticles('onlyme');
+      return this.findByStatusArticles('onlyme');
     }
 
     // find draft articles
     if (status === 'draft') {
-      return this.getStatusArticles('draft');
+      return this.findByStatusArticles('draft');
     }
 
     // find only published articles
@@ -148,9 +148,9 @@ export class ArticleService {
   }
 
   /**
-   * get articles by status
+   * find articles by status
    */
-  async getStatusArticles(status) {
+  async findByStatusArticles(status) {
     // find articles by status
     const articles = await this.articleRepository.find({
       where: {
