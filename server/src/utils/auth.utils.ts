@@ -1,6 +1,6 @@
 import { randomBytes, createHash } from 'crypto';
 
-export const accessTkDevExpiresIn = 5;
+export const accessTkDevExpiresIn = '3h';
 export const accessTkPrdExpiresIn = '15m';
 export const refreshTkExpiresIn = '3d';
 
