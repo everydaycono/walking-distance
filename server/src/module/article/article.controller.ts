@@ -78,9 +78,11 @@ export class ArticleController {
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
-    @Body() article: InputArticleType
+    @Body() article: InputArticleType,
+    @Req() req
   ) {
-    return this.articleService.editSingleArticle(id, article);
+    const userId = req.userInfo.id as string;
+    return this.articleService.editSingleArticle(id, article, userId);
   }
 
   /**
@@ -95,7 +97,8 @@ export class ArticleController {
   })
   @ApiOperation({ summary: 'Delete Single Article' })
   @Delete(':id')
-  deleteSingleArticle(@Param('id') id: string) {
-    return this.articleService.deleteSingleArticle(id);
+  deleteSingleArticle(@Param('id') id: string, @Req() req) {
+    const userId = req.userInfo.id as string;
+    return this.articleService.deleteSingleArticle(id, userId);
   }
 }

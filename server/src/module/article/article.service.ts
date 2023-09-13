@@ -3,7 +3,8 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException
+  NotFoundException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Article } from './article.entity';
@@ -160,17 +161,35 @@ export class ArticleService {
   /**
    * edit single article
    */
-  async editSingleArticle(id: string, article: InputArticleType) {
+  async editSingleArticle(
+    articleId: string,
+    article: InputArticleType,
+    userId: string
+  ) {
     const { title, content, category, tags } = article;
+    const tagEntities: Tag[] = [];
 
     // find article by id in database
     const existArticle = await this.articleRepository.findOne({
-      where: { id }
+      where: { id: articleId },
+      relations: ['user', 'category', 'tags'],
+      select: {
+        user: {
+          id: true
+        }
+      }
     });
 
     // if no article with current id
     if (!existArticle) {
-      throw new NotFoundException(`article not found with id ${id}`);
+      throw new NotFoundException(`article not found with id ${articleId}`);
+    }
+
+    // article이 주인이 아닐때 throw exception
+    if (existArticle.user.id !== userId) {
+      throw new UnauthorizedException(
+        'Unauthorized access. you are not owner this article.'
+      );
     }
 
     // if no edit body
@@ -188,14 +207,18 @@ export class ArticleService {
       existArticle.content = content;
     }
 
-    // find category
+    // find category if no exist throw error
     if (category) {
       await this.findByCategory(category, existArticle);
     }
 
-    // find tag
-    if (tags?.length > 0) {
-      await this.findByTag(tags, existArticle);
+    // create tag or find tag
+    if (tags.length > 0) {
+      for (const label of tags) {
+        const tagEntity = await this.createOrGetTag(label);
+        tagEntities.push(tagEntity);
+      }
+      existArticle.tags = tagEntities;
     }
 
     // Save the updated article
