@@ -57,10 +57,6 @@ export class Article {
   isRecommended: boolean;
 
   @ApiProperty()
-  @Column({ type: 'boolean', default: true })
-  isCommentable: boolean;
-
-  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: 'create time',
