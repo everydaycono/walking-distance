@@ -31,7 +31,10 @@ export class Article {
   content: string;
 
   @ApiProperty()
-  @Column('simple-enum', { enum: ['draft', 'publish'], default: 'draft' })
+  @Column('simple-enum', {
+    enum: ['draft', 'publish', 'onlyme'],
+    default: 'draft'
+  })
   status: string;
 
   @ApiProperty()
@@ -55,10 +58,6 @@ export class Article {
   @ApiProperty()
   @Column({ type: 'boolean', default: false })
   isRecommended: boolean;
-
-  @ApiProperty()
-  @Column({ type: 'boolean', default: true })
-  isCommentable: boolean;
 
   @ApiProperty()
   @CreateDateColumn({

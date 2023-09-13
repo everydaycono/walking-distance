@@ -28,7 +28,7 @@ export class ArticleService {
    * create article
    */
   async create(article: InputArticleType, userId: string) {
-    const { title, content, category, tags } = article;
+    const { title, content, category, tags, status } = article;
     const tagEntities: Tag[] = [];
 
     // require title and content
@@ -55,15 +55,20 @@ export class ArticleService {
         const tagEntity = await this.createOrGetTag(label);
         tagEntities.push(tagEntity);
       }
+      newArticle.tags = tagEntities;
     }
 
-    // set new article
-    newArticle.status = 'publish';
-    newArticle.tags = tagEntities;
+    // article status에 따른 동작
+    if (status === 'draft') {
+      newArticle.status = 'draft';
+    } else if (status === 'onlyme') {
+      newArticle.status = 'onlyme';
+    } else {
+      newArticle.status = 'publish';
+    }
 
     // save new article
     await this.articleRepository.save(newArticle);
-
     return { msg: 'successfully created article' };
   }
 
@@ -104,8 +109,22 @@ export class ArticleService {
   /**
    * get all articles
    */
-  async getAllArticles() {
+  async getAllArticles(status) {
+    // find onlyme articles
+    if (status === 'onlyme') {
+      return this.findByStatusArticles('onlyme');
+    }
+
+    // find draft articles
+    if (status === 'draft') {
+      return this.findByStatusArticles('draft');
+    }
+
+    // find only published articles
     const articles = await this.articleRepository.find({
+      where: {
+        status: 'publish'
+      },
       order: { createAt: 'DESC' },
       relations: ['category', 'tags', 'user'],
       select: {
@@ -125,6 +144,36 @@ export class ArticleService {
     }
 
     // return all articles
+    return articles;
+  }
+
+  /**
+   * find articles by status
+   */
+  async findByStatusArticles(status) {
+    // find articles by status
+    const articles = await this.articleRepository.find({
+      where: {
+        status
+      },
+      order: { createAt: 'DESC' },
+      relations: ['category', 'tags', 'user'],
+      select: {
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          avatar: true
+        }
+      }
+    });
+
+    // if no articles return []
+    if (!articles || articles.length === 0) {
+      return [];
+    }
+
     return articles;
   }
 
@@ -165,7 +214,7 @@ export class ArticleService {
     article: InputArticleType,
     userId: string
   ) {
-    const { title, content, category, tags } = article;
+    const { title, content, category, tags, status } = article;
     const tagEntities: Tag[] = [];
 
     // find article by id in database
@@ -196,6 +245,15 @@ export class ArticleService {
       return {
         message: 'no edit body'
       };
+    }
+
+    // update the article by status
+    if (status === 'onlyme') {
+      existArticle.status = 'onlyme';
+    } else if (status === 'draft') {
+      existArticle.status = 'draft';
+    } else {
+      existArticle.status = 'publish';
     }
 
     // Update the article fields
