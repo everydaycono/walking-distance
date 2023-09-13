@@ -31,7 +31,10 @@ export class Article {
   content: string;
 
   @ApiProperty()
-  @Column('simple-enum', { enum: ['draft', 'publish'], default: 'draft' })
+  @Column('simple-enum', {
+    enum: ['draft', 'publish', 'onlyme'],
+    default: 'draft'
+  })
   status: string;
 
   @ApiProperty()
