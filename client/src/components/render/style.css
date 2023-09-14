@@ -1,0 +1,102 @@
+/* 기본 텍스트 스타일링 */
+.html-render h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.html-render h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.html-render h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.html-render h4 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.html-render p {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.html-render strong {
+  font-weight: bold;
+}
+
+.html-render em {
+  font-style: italic;
+}
+
+.html-render u {
+  text-decoration: underline;
+}
+
+.html-render s {
+  text-decoration: line-through;
+}
+
+.html-render blockquote {
+  margin-left: 1px;
+  padding: 6px;
+  border-left: 3px solid #333;
+}
+
+ol,
+.html-render ul {
+  margin: 0 0 1rem;
+  padding-left: 2rem;
+}
+
+.html-render li {
+  margin: 0.5rem 0;
+}
+
+/* 링크 스타일 */
+.html-render a {
+  color: blue;
+  text-decoration: underline;
+}
+
+/* 이미지 스타일 */
+.html-render img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 정렬 스타일 */
+.html-render .ql-align-right {
+  text-align: right;
+}
+
+.html-render .ql-align-center {
+  text-align: center;
+}
+
+/* 텍스트 색상 스타일 */
+.html-render span.color-red {
+  color: rgb(230, 0, 0);
+}
+
+.html-render span.color-orange {
+  color: rgb(255, 153, 0);
+}
+
+.html-render span.color-green {
+  color: rgb(0, 138, 0);
+}
+
+/* 배경 색상 스타일 */
+.html-render span.bg-red {
+  background-color: rgb(230, 0, 0);
+}
+
+/* 커서 스타일 */
+.html-render .ql-cursor {
+  /* 필요한 스타일 적용 */
+}

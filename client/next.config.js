@@ -2,11 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   images: {
-    remotePatterns: [
-      {
-        hostname: 'images.unsplash.com'
-      }
-    ]
+    domains: ['images.unsplash.com', 'utfs.io']
   }
 };
 
