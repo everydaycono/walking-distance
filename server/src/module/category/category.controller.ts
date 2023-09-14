@@ -10,7 +10,12 @@ import {
   Post,
   UseGuards
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiParam,
+  ApiTags
+} from '@nestjs/swagger';
 import { Category } from './category.entity';
 import { Roles } from '../auth/decorators/roles.decorators';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
@@ -26,10 +31,7 @@ export class CategoryController {
    * create a new category
    */
   @ApiOperation({ summary: 'Create category' })
-  @ApiResponse({
-    status: 201,
-    description: 'create a new category'
-  })
+  @ApiExcludeEndpoint()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
@@ -41,10 +43,6 @@ export class CategoryController {
    * get all categories
    */
   @ApiOperation({ summary: 'Get all categories' })
-  @ApiResponse({
-    status: 200,
-    description: 'get all categories'
-  })
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
@@ -54,27 +52,24 @@ export class CategoryController {
   /**
    * get single categories
    */
-  @ApiOperation({ summary: 'Get single category' })
-  @ApiResponse({
-    status: 200,
-    description: 'get single category'
+  @ApiParam({
+    name: 'label',
+    description: '카테고리 라벨 : daily, study, tech, hobby, exercise',
+    required: true
   })
+  @ApiOperation({ summary: 'Get single category' })
   @Get(':label')
   @HttpCode(HttpStatus.OK)
-  findByLabel(@Param('label') label: string) {
+  findByLabel(@Param('label') label) {
     return this.categoryService.findByLabel(label);
   }
 
   /**
    * edit single categories
    */
+  @ApiExcludeEndpoint()
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
-  @ApiOperation({ summary: 'Edit single category' })
-  @ApiResponse({
-    status: 200,
-    description: 'edit single category'
-  })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   editById(@Param('id') id: string, @Body() category: Partial<Category>) {
@@ -82,15 +77,11 @@ export class CategoryController {
   }
 
   /**
-   * edit single categories
+   * delete single categories
    */
+  @ApiExcludeEndpoint()
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
-  @ApiOperation({ summary: 'Delete single category' })
-  @ApiResponse({
-    status: 200,
-    description: 'delete single category'
-  })
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   deleteById(@Param('id') id: string) {

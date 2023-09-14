@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
@@ -11,19 +10,15 @@ import { Article } from '../article/article.entity';
 
 @Entity()
 export class Category {
-  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty()
   @Column()
   label: string;
 
-  @ApiProperty()
   @OneToMany(() => Article, (article) => article.category)
   articles: Article[];
 
-  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: 'create time',
@@ -31,7 +26,6 @@ export class Category {
   })
   createAt: Date;
 
-  @ApiProperty()
   @UpdateDateColumn({
     type: 'datetime',
     comment: 'update time',
