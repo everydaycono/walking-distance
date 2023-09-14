@@ -30,7 +30,7 @@ export class TagService {
     const newTag = await this.tagRepository.create(tag);
     await this.tagRepository.save(newTag);
 
-    return { msg: 'Tag created successfully' };
+    return { message: 'Tag created successfully' };
   }
 
   /**
@@ -111,7 +111,7 @@ export class TagService {
       .where('id=:id', { id })
       .execute();
 
-    return { msg: 'successfully edited tag' };
+    return { message: 'successfully edited tag' };
   }
 
   /**
@@ -138,6 +138,6 @@ export class TagService {
 
     // delete single tag
     await this.tagRepository.remove(existTag);
-    return { msg: 'successfully deleted tag' };
+    return { message: 'successfully deleted tag' };
   }
 }

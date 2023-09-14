@@ -115,7 +115,7 @@ export class CategoryService {
       .where('id=:id', { id })
       .execute();
 
-    return { msg: 'successfully edited category' };
+    return { message: 'successfully edited category' };
   }
 
   /**
@@ -141,6 +141,6 @@ export class CategoryService {
 
     // delete single category
     await this.categoryRepository.delete({ id });
-    return { msg: 'successfully deleted category' };
+    return { message: 'successfully deleted category' };
   }
 }

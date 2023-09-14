@@ -76,7 +76,7 @@ export class ArticleService {
 
     // save new article
     await this.articleRepository.save(newArticle);
-    return { msg: 'successfully created article' };
+    return { message: 'successfully created article' };
   }
 
   /**
@@ -293,7 +293,7 @@ export class ArticleService {
     // Save the updated article
     await this.articleRepository.save(existArticle);
 
-    return { msg: 'successfully edited article' };
+    return { message: 'successfully edited article' };
   }
 
   /**
@@ -326,6 +326,6 @@ export class ArticleService {
     }
 
     await this.articleRepository.delete({ id: articleId });
-    return { msg: 'successfully deleted article' };
+    return { message: 'successfully deleted article' };
   }
 }
