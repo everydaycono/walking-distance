@@ -16,10 +16,8 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiExtraModels,
   ApiOperation,
   ApiQuery,
-  ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
 import { Article } from './article.entity';
@@ -36,7 +34,9 @@ export class ArticleController {
    */
   @ApiOperation({ summary: 'Create Article' })
   @ApiBody({
-    type: ArticleDTO.Request.CreateArticleDto
+    type: ArticleDTO.Request.CreateArticleDto,
+    description:
+      '게시물 status : draft, publish, onlyme </br> 게시물 category : daily, study, tech, hobby, exercise'
   })
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)

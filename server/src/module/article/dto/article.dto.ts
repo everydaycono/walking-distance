@@ -20,18 +20,21 @@ export namespace ArticleDTO {
 
       @ApiProperty({
         example: 'publish',
-        description: '게시글 상태',
-        type: 'draft, publish, onlyme',
+        description: '게시물 상태 "draft", "publish", "onlyme"',
+        enum: ['draft', 'publish', 'onlyme'],
         required: true
       })
+      @IsIn(['draft', 'publish', 'onlyme'])
       status: string;
 
       @ApiProperty({
         example: 'daily',
-        description: '게시글 상태',
-        type: 'daily, study, tech, hobby, exercise',
+        description:
+          '게시물 카테고리 "daily", "study", "tech", "hobby", "exercise"',
+        enum: ['daily', 'study', 'tech', 'hobby', 'exercise'],
         required: true
       })
+      @IsIn(['daily', 'study', 'tech', 'hobby', 'exercise'])
       category: string;
     }
     export class StatusQueryDto {
