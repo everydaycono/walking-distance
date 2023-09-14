@@ -106,8 +106,8 @@ export class AuthService {
     }
     // Check password
     const isPasswordCorrect = await passwordCompare({
-      plainPassword: isExistUser.password,
-      hashedPassword: user.password
+      hashedPassword: isExistUser.password,
+      plainPassword: user.password
     });
 
     if (!isPasswordCorrect) {
