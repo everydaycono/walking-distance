@@ -16,7 +16,9 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiExtraModels,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
@@ -25,7 +27,7 @@ import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { InputArticleType } from './types/article.type';
 import { ArticleDTO } from './dto/article.dto';
 
-@ApiTags('🌳Article')
+@ApiTags('Article')
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
@@ -34,14 +36,9 @@ export class ArticleController {
    */
   @ApiOperation({ summary: 'Create Article' })
   @ApiBody({
-    type: ArticleDTO.Request.createArticleDto
+    type: ArticleDTO.Request.CreateArticleDto
   })
   @ApiBearerAuth()
-  @ApiResponse({
-    status: 201,
-    description: 'successfully created article',
-    type: [Article]
-  })
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
   @Post()
@@ -53,26 +50,21 @@ export class ArticleController {
   /**
    * get all articles
    */
-  @ApiResponse({
-    status: 200,
-    description: 'Get All Articles',
-    type: [Article]
-  })
+
   @ApiOperation({ summary: 'Get All Articles' })
+  @ApiQuery({
+    name: 'status',
+    required: false
+  })
   @HttpCode(HttpStatus.OK)
   @Get()
-  getAllArticles(@Query('status') status) {
+  getAllArticles(@Query('status') status: ArticleDTO.Request.StatusQueryDto) {
     return this.articleService.getAllArticles(status);
   }
 
   /**
    * get single article
    */
-  @ApiResponse({
-    status: 200,
-    description: 'Get Single Article',
-    type: [Article]
-  })
   @ApiOperation({ summary: 'Get Single Article' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -85,12 +77,8 @@ export class ArticleController {
    */
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
-  @ApiResponse({
-    status: 200,
-    description: 'Edit Single Article',
-    type: [Article]
-  })
   @ApiOperation({ summary: 'Edit Single Article' })
+  @ApiBearerAuth()
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
@@ -104,13 +92,9 @@ export class ArticleController {
   /**
    * delete single article
    */
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({
-    status: 200,
-    description: 'Delete Single Article',
-    type: [Article]
-  })
   @ApiOperation({ summary: 'Delete Single Article' })
   @Delete(':id')
   deleteSingleArticle(@Param('id') id: string, @Req() req) {
