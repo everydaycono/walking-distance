@@ -15,6 +15,27 @@ export class CategoryService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>
   ) {}
+
+  // seed data
+  public async seed() {
+    try {
+      // 초기화
+      await this.categoryRepository.delete({});
+
+      // create category seed
+      await this.categoryRepository.save([
+        { label: 'daily' },
+        { label: 'exercise' },
+        { label: 'study' },
+        { label: 'tech' },
+        { label: 'hobby' }
+      ]);
+    } catch (error) {
+      console.log('create category seed data error', error);
+      throw error;
+    }
+  }
+
   /**
    * create a new category
    */

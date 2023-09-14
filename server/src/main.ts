@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CategoryService } from './module/category/category.service';
 
 async function bootstrap() {
   /*
@@ -20,6 +21,12 @@ async function bootstrap() {
   |--------------------------------------------------------------------------
   */
   const app = await NestFactory.create(AppModule);
+
+  // CategoryService를 사용하여 시드 데이터 생성
+  const categoryService = app.get(CategoryService);
+  await categoryService.seed();
+
+  // middleware
   app.setGlobalPrefix('api');
   app.enableCors();
   //   app.use(helmet.default());
