@@ -3,7 +3,8 @@ import { useTheme } from 'next-themes';
 import { useSession } from 'next-auth/react';
 import { Switch } from '@/components/ui/switch';
 import Avatar from '../Avatar';
-import { Moon, SunMoon } from 'lucide-react';
+import { Moon, PenSquare, SunMoon } from 'lucide-react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const { data, status: loginStatus } = useSession();
@@ -57,6 +58,15 @@ const Navbar = () => {
                 className="data-[state=checked]:bg-yellow-300 data-[state=unchecked]:bg-gray-200"
               />
               <SunMoon />
+            </div>
+
+            <div className="flex items-center mx-5">
+              <Link href={'/article/new-post'}>
+                <PenSquare
+                  size={20}
+                  className="hover:scale-110 transition duration-200 cursor-pointer"
+                />
+              </Link>
             </div>
             {/* USER STATE */}
             {loginStatus === 'loading' && <Avatar loading={true} />}

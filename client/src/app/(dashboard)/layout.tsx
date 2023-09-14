@@ -9,7 +9,9 @@ const layout: FC<layoutProps> = async ({ children }) => {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      {children}
+      <div className="w-full">
+        <div className="max-w-7xl mx-auto my-10">{children}</div>
+      </div>
     </div>
   );
 };
