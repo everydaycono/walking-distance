@@ -22,7 +22,13 @@ import {
   FilesInterceptor
 } from '@nestjs/platform-express';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 
 @ApiTags('👩🏻‍💻User')
 @Controller('user')
@@ -33,11 +39,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Patch('avatar')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Update avatar' })
-  @ApiResponse({
-    status: 200,
-    description: 'Update avatar'
-  })
+  @ApiExcludeEndpoint()
   @UseInterceptors(FileInterceptor('file'))
   updateAvatar(
     @UploadedFile(
@@ -61,11 +63,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Post('file')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Upload only one avatar' })
-  @ApiResponse({
-    status: 200,
-    description: 'Upload only one avatar'
-  })
+  @ApiExcludeEndpoint()
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile(
@@ -84,11 +82,7 @@ export class UserController {
   // upload multi files
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Upload multi Files' })
-  @ApiResponse({
-    status: 200,
-    description: 'Upload multi files'
-  })
+  @ApiExcludeEndpoint()
   @Post('files')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -110,10 +104,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get my all articles' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get my all articles'
-  })
+  @ApiBearerAuth()
   @Get('/my/articles')
   getMyArticles(@Req() req) {
     const userId = req.userInfo.id as string;
@@ -124,6 +115,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get other person articles' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Get other person articles'
