@@ -5,6 +5,10 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadFiles } from '@/utils/uploadthing/config';
 
+//@ts-ignore
+import ImageResize from 'quill-image-resize';
+Quill.register('modules/ImageResize', ImageResize);
+
 interface QuillNoSSRWrapperProps {
   className?: string;
   onChange?: (value: string) => void;
@@ -76,10 +80,10 @@ const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
         handlers: {
           image: imageHandler
         }
+      },
+      ImageResize: {
+        parchment: Quill.import('parchment')
       }
-      // ImageResize: {
-      //   parchment: Quill.import('parchment')
-      // }
     };
   }, []);
 
