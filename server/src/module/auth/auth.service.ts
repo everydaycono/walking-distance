@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { MoreThan, Repository } from 'typeorm';
 import { passwordCompare, passwordHash } from 'src/utils/user.utils';
-import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import {
   accessTkDevExpiresIn,
@@ -106,10 +105,11 @@ export class AuthService {
       );
     }
     // Check password
-    const isPasswordCorrect = passwordCompare({
+    const isPasswordCorrect = await passwordCompare({
       plainPassword: isExistUser.password,
       hashedPassword: user.password
     });
+
     if (!isPasswordCorrect) {
       throw new HttpException(
         'Incorrect user name or password',
@@ -180,7 +180,6 @@ export class AuthService {
     const EXPIRE_TIME =
       process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
 
-    console.log('리프레시');
     return {
       token: {
         access: accessToken,
