@@ -50,7 +50,7 @@ export class AuthController {
    */
   @ApiOperation({ summary: 'Create User', description: 'Create New User' })
   @ApiBody({
-    type: AuthDTO.Request.createUserDto
+    type: AuthDTO.Request.CreateUserDto
   })
   @UseInterceptors(ClassSerializerInterceptor) // password 제거.
   @HttpCode(HttpStatus.CREATED)

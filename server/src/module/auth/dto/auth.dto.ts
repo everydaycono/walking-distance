@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export namespace AuthDTO {
   export namespace Request {
-    export class createUserDto {
+    export class CreateUserDto {
       @ApiProperty({
         example: 'test@gmail.com',
         description: 'email',
