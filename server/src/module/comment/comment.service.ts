@@ -26,13 +26,15 @@ const childParentInfo = {
   id: true,
   user: userInfo
 };
-
+// -----------------------------------------------
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>
   ) {}
+
+  // create comment
   async create(userId: string, articleId: string, commentBody: CommentType) {
     if (!userId || !articleId || !commentBody) {
       throw new BadRequestException(
@@ -64,6 +66,7 @@ export class CommentService {
     }
   }
 
+  // find comment is not had parent
   async findArticleComments(id: string) {
     const comments = await this.commentRepository.find({
       where: {
@@ -90,6 +93,7 @@ export class CommentService {
     return comments;
   }
 
+  // find all comments
   async findComment(id: string) {
     const comments = await this.commentRepository.findOne({
       where: {
@@ -113,6 +117,7 @@ export class CommentService {
     return comments;
   }
 
+  // update comment
   async update(
     id: string,
     userId: string,
@@ -161,6 +166,7 @@ export class CommentService {
     }
   }
 
+  // delete comment
   async remove(id: string, userId: string) {
     const findComment = await this.commentRepository.findOne({
       where: {
