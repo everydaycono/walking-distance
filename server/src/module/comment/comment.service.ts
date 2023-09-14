@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
-import { Comment } from './entities/comment.entity';
+import { Comment } from './comment.entity';
 
 export type CommentType = Partial<Comment> & {
   content: string;

@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
   JoinTable
 } from 'typeorm';
-import { Comment } from '../comment/entities/comment.entity';
+import { Comment } from '../comment/comment.entity';
 import { Category } from '../category/category.entity';
 import { Tag } from '../tag/tag.entity';
 import { User } from '../user/user.entity';

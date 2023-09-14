@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsEmail, MinLength } from 'class-validator';
-import { Comment } from '../comment/entities/comment.entity';
+import { Comment } from '../comment/comment.entity';
 
 @Entity()
 export class User {
