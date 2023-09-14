@@ -16,7 +16,14 @@ import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorators';
 import { Role } from '../auth/role.enum';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
+import { CommentDTO } from './dto/comment.dto';
 
 @ApiTags('Comment')
 @Controller('comment')
@@ -26,17 +33,17 @@ export class CommentController {
   /**
    * create comment
    */
+  @ApiBearerAuth()
+  @ApiBody({
+    type: CommentDTO.Request.CreateCommentDto
+  })
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create Comment' })
-  @ApiResponse({
-    status: 201,
-    description: 'Create Comment'
-  })
-  @Post(':id')
+  @Post(':articleId')
   create(
-    @Param('id') articleId: string,
+    @Param('articleId') articleId: string,
     @Req() req,
     @Body() commentBody: CommentType
   ) {
@@ -51,13 +58,9 @@ export class CommentController {
    */
 
   @ApiOperation({ summary: 'Find Comment by id' })
-  @ApiResponse({
-    status: 200,
-    description: 'Find Comment by id'
-  })
-  @Get(':id')
+  @Get(':commentId')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') commentId: string) {
+  findOne(@Param('commentId') commentId: string) {
     return this.commentService.findComment(commentId);
   }
 
@@ -70,9 +73,9 @@ export class CommentController {
     status: 200,
     description: 'Find all comments by article'
   })
-  @Get('article/:id')
+  @Get('article/:articleId')
   @HttpCode(HttpStatus.OK)
-  findAll(@Param('id') id: string) {
+  findAll(@Param('articleId') id: string) {
     return this.commentService.findArticleComments(id);
   }
 
@@ -83,17 +86,17 @@ export class CommentController {
    * @param updateCommentDto
    * @returns
    */
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update Comment' })
+  @ApiBody({
+    type: CommentDTO.Request.EditCommentDto
+  })
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Update Comment' })
-  @ApiResponse({
-    status: 200,
-    description: 'Update Comment'
-  })
-  @Patch(':id')
+  @Patch(':commentId')
   update(
-    @Param('id') id: string,
+    @Param('commentId') id: string,
     @Req() req,
     @Body() updateCommentDto: { content: string }
   ) {
@@ -107,16 +110,13 @@ export class CommentController {
    * @param id
    * @returns
    */
+  @ApiOperation({ summary: 'Delete Comment' })
+  @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.VISITOR)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Delete Comment' })
-  @ApiResponse({
-    status: 200,
-    description: 'Delete Comment'
-  })
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
+  @Delete(':commentId')
+  remove(@Param('commentId') id: string, @Req() req) {
     const userId = req.userInfo.id as string;
     return this.commentService.remove(id, userId);
   }

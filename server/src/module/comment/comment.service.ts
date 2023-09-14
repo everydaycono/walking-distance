@@ -42,7 +42,7 @@ export class CommentService {
       );
     }
     if (!commentBody.content) {
-      throw new BadRequestException('please provide omment body');
+      throw new BadRequestException('please provide comment body');
     }
 
     const { parent, content } = commentBody;

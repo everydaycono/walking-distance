@@ -56,7 +56,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Walking Distance')
-      .setDescription('WD API Document')
+      .setDescription('Walking Distance API Document')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
