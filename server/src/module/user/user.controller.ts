@@ -120,7 +120,7 @@ export class UserController {
     return this.userService.getMyArticles(userId);
   }
 
-  // get other's articles
+  // get other person articles
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get other person articles' })
@@ -129,7 +129,7 @@ export class UserController {
     description: 'Get other person articles'
   })
   @Get('/:userId/articles')
-  getPersonArticles(@Param('userId') userId: string) {
-    return this.userService.getPersonArticles(userId);
+  getOtherPersonArticles(@Param('userId') userId: string) {
+    return this.userService.getOtherPersonArticles(userId);
   }
 }
