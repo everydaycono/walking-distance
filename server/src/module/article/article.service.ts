@@ -28,7 +28,7 @@ export class ArticleService {
    * create article
    */
   async create(article: InputArticleType, userId: string) {
-    const { title, content, category, tags, status } = article;
+    const { title, content, category, tags, status, thumbnail } = article;
     const tagEntities: Tag[] = [];
 
     // require title and content
@@ -65,6 +65,11 @@ export class ArticleService {
       newArticle.status = 'onlyme';
     } else {
       newArticle.status = 'publish';
+    }
+
+    // set thumbnail
+    if (thumbnail) {
+      newArticle.thumbnail = thumbnail;
     }
 
     // save new article
@@ -214,7 +219,7 @@ export class ArticleService {
     article: InputArticleType,
     userId: string
   ) {
-    const { title, content, category, tags, status } = article;
+    const { title, content, category, tags, status, thumbnail } = article;
     const tagEntities: Tag[] = [];
 
     // find article by id in database
@@ -276,6 +281,11 @@ export class ArticleService {
         tagEntities.push(tagEntity);
       }
       existArticle.tags = tagEntities;
+    }
+
+    // set thumbnail
+    if (thumbnail) {
+      existArticle.thumbnail = thumbnail;
     }
 
     // Save the updated article

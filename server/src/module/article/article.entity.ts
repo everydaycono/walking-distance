@@ -31,6 +31,10 @@ export class Article {
   content: string;
 
   @ApiProperty()
+  @Column({ type: 'varchar', nullable: true })
+  thumbnail: string;
+
+  @ApiProperty()
   @Column('simple-enum', {
     enum: ['draft', 'publish', 'onlyme'],
     default: 'draft'
