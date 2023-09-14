@@ -23,8 +23,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // CategoryService를 사용하여 시드 데이터 생성
-  const categoryService = app.get(CategoryService);
-  await categoryService.seed();
+  app.get(CategoryService);
 
   // middleware
   app.setGlobalPrefix('api');

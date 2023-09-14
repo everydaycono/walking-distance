@@ -3,35 +3,46 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException
+  NotFoundException,
+  OnApplicationBootstrap
 } from '@nestjs/common';
 import { Category } from './category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class CategoryService {
+export class CategoryService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>
   ) {}
 
-  // seed data
-  public async seed() {
+  // onApplicationBootstrap called
+  async onApplicationBootstrap() {
+    await this.seed();
+  }
+  // create seed data
+  private async seed() {
     try {
-      // 초기화
-      await this.categoryRepository.delete({});
+      // find all categories
+      const existingCategories = await this.categoryRepository.find();
 
-      // create category seed
-      await this.categoryRepository.save([
-        { label: 'daily' },
-        { label: 'exercise' },
-        { label: 'study' },
-        { label: 'tech' },
-        { label: 'hobby' }
-      ]);
+      // if no categories
+      if (existingCategories.length === 0) {
+        // 초기 데이터 추가
+        await this.categoryRepository.save([
+          { label: 'daily' },
+          { label: 'exercise' },
+          { label: 'study' },
+          { label: 'tech' },
+          { label: 'hobby' }
+        ]);
+      } else {
+        // already maded categories, return
+        return;
+      }
     } catch (error) {
-      console.log('create category seed data error', error);
+      console.error('Category seed data error', error);
       throw error;
     }
   }
