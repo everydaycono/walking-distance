@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
-import { Comment } from './entities/comment.entity';
+import { Comment } from './comment.entity';
 
 export type CommentType = Partial<Comment> & {
   content: string;
@@ -42,7 +42,7 @@ export class CommentService {
       );
     }
     if (!commentBody.content) {
-      throw new BadRequestException('please provide omment body');
+      throw new BadRequestException('please provide comment body');
     }
 
     const { parent, content } = commentBody;

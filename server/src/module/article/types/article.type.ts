@@ -2,9 +2,9 @@ import { Article } from '../article.entity';
 
 type CategoryLabelType = string;
 type TagsType = string[];
-type PartialArtcile = Partial<Article>;
+type PartialArticle = Partial<Article>;
 
-export type InputArticleType = PartialArtcile & {
+export type InputArticleType = PartialArticle & {
   category: CategoryLabelType;
   tags: TagsType;
 };

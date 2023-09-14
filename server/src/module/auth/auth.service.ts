@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -9,7 +11,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { MoreThan, Repository } from 'typeorm';
 import { passwordCompare, passwordHash } from 'src/utils/user.utils';
-import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import {
   accessTkDevExpiresIn,
@@ -52,7 +53,7 @@ export class AuthService {
     });
 
     if (isUserExist) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new ConflictException('User already exists');
     }
 
     // Encrypt password
@@ -92,10 +93,7 @@ export class AuthService {
     });
 
     if (!isExistUser) {
-      throw new HttpException(
-        'Incorrect user name or password',
-        HttpStatus.NOT_FOUND
-      );
+      throw new UnauthorizedException('Incorrect user name or password');
     }
 
     // email verification check
@@ -106,20 +104,18 @@ export class AuthService {
       );
     }
     // Check password
-    const isPasswordCorrect = passwordCompare({
-      plainPassword: isExistUser.password,
-      hashedPassword: user.password
+    const isPasswordCorrect = await passwordCompare({
+      hashedPassword: isExistUser.password,
+      plainPassword: user.password
     });
+
     if (!isPasswordCorrect) {
-      throw new HttpException(
-        'Incorrect user name or password',
-        HttpStatus.NOT_FOUND
-      );
+      throw new UnauthorizedException('Incorrect user name or password');
     }
 
     // User status check ("locekd",'active')
     if (isExistUser.status === 'locked') {
-      throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException('Your account is locked');
     }
 
     // Create JWT TOKEN
@@ -180,7 +176,6 @@ export class AuthService {
     const EXPIRE_TIME =
       process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
 
-    console.log('리프레시');
     return {
       token: {
         access: accessToken,

@@ -15,7 +15,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 
 import { RefreshGuard } from './guard/refresh-jwt.guard';
 import { Request as ExpRequest } from 'express';
@@ -24,6 +30,7 @@ import { JwtGuard } from './guard/access-jwt.guard';
 import { Roles } from './decorators/roles.decorators';
 import { Role } from './role.enum';
 import { RolesGuard } from './guard/roles.guard';
+import { AuthDTO } from './dto/auth.dto';
 
 export interface IuserInfo {
   token: string;
@@ -41,10 +48,9 @@ export class AuthController {
   /**
    * Register
    */
-  @ApiOperation({ summary: 'Create User' })
-  @ApiResponse({
-    status: 201,
-    description: 'Created user'
+  @ApiOperation({ summary: 'Create User', description: 'Create New User' })
+  @ApiBody({
+    type: AuthDTO.Request.CreateUserDto
   })
   @UseInterceptors(ClassSerializerInterceptor) // password 제거.
   @HttpCode(HttpStatus.CREATED)
@@ -59,25 +65,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login User' })
-  @ApiResponse({
-    status: 200,
-    description: 'login user'
+  @ApiBody({
+    type: AuthDTO.Request.LoginUserDto
   })
   login(@Body() user: Pick<User, 'email' | 'password'>) {
     return this.authService.login(user);
-  }
-
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @Post('admin')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Check admin' })
-  @ApiResponse({
-    status: 200,
-    description: 'Check admin'
-  })
-  checkAdmin() {
-    return this.authService.checkAdmin();
   }
 
   /**
@@ -86,22 +78,17 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get refresh token' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get refresh token'
-  })
+  @ApiExcludeEndpoint()
   refreshToken(@Request() req: RequestWithUser) {
     return this.authService.refreshToken(req.userInfo);
   }
 
+  /**
+   * verify email
+   */
   @Get('verify-email')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Verify email' })
-  @ApiResponse({
-    status: 200,
-    description: 'Verify email'
-  })
+  @ApiExcludeEndpoint()
   verifyEmail(@Query('token') verifyToken: string) {
     if (!verifyToken) {
       throw new HttpException(
@@ -112,26 +99,20 @@ export class AuthController {
     return this.authService.verifyEmail(verifyToken);
   }
 
+  // social login
+  @ApiExcludeEndpoint()
   @Get('social-login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Github Login Redirect' })
-  @ApiResponse({
-    status: 200,
-    description: 'Github Login'
-  })
   @UseGuards(AuthGuard('github'))
   async socialLogin() {
     return 'redirecting to github...';
   }
 
+  // github callback
+  @ApiExcludeEndpoint()
   @Get('github-callback')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
-  @ApiOperation({ summary: 'Github Login Callback' })
-  @ApiResponse({
-    status: 200,
-    description: 'Github Login Callback'
-  })
   async githubCallback(@Req() req) {
     const { user } = req as {
       user: {
@@ -152,5 +133,15 @@ export class AuthController {
       avatar: user.photos[0].value
     };
     return this.authService.socialLogin(newUser, 'github');
+  }
+
+  // admin
+  @ApiExcludeEndpoint()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post('admin')
+  @HttpCode(HttpStatus.OK)
+  checkAdmin() {
+    return this.authService.checkAdmin();
   }
 }

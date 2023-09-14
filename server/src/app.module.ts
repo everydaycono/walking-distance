@@ -11,7 +11,7 @@ import { CommentModule } from './module/comment/comment.module';
 import { TagModule } from './module/tag/tag.module';
 import { Article } from './module/article/article.entity';
 import { Category } from './module/category/category.entity';
-import { Comment } from './module/comment/entities/comment.entity';
+import { Comment } from './module/comment/comment.entity';
 import { Tag } from './module/tag/tag.entity';
 import { User } from './module/user/user.entity';
 

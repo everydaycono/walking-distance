@@ -13,20 +13,32 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiTags
+} from '@nestjs/swagger';
 import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { InputArticleType } from './types/article.type';
+import { ArticleDTO } from './dto/article.dto';
 
-@ApiTags('🌳Article')
+@ApiTags('Article')
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
   /**
    * create article
    */
-  @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
   @ApiOperation({ summary: 'Create Article' })
+  @ApiBody({
+    type: ArticleDTO.Request.CreateArticleDto,
+    description:
+      '게시물 status : draft, publish, onlyme </br> 게시물 category : daily, study, tech, hobby, exercise'
+  })
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
   @Post()
@@ -38,26 +50,21 @@ export class ArticleController {
   /**
    * get all articles
    */
-  @ApiResponse({
-    status: 200,
-    description: 'Get All Articles',
-    type: [Article]
-  })
+
   @ApiOperation({ summary: 'Get All Articles' })
+  @ApiQuery({
+    name: 'status',
+    required: false
+  })
   @HttpCode(HttpStatus.OK)
   @Get()
-  getAllArticles(@Query('status') status) {
+  getAllArticles(@Query('status') status: ArticleDTO.Request.StatusQueryDto) {
     return this.articleService.getAllArticles(status);
   }
 
   /**
    * get single article
    */
-  @ApiResponse({
-    status: 200,
-    description: 'Get Single Article',
-    type: [Article]
-  })
   @ApiOperation({ summary: 'Get Single Article' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -68,14 +75,15 @@ export class ArticleController {
   /**
    * edit single article
    */
+  @ApiOperation({ summary: 'Edit Single Article' })
+  @ApiBearerAuth()
+  @ApiBody({
+    type: ArticleDTO.Request.EditArticleDto,
+    description:
+      '게시물 status : draft, publish, onlyme </br> 게시물 category : daily, study, tech, hobby, exercise'
+  })
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
-  @ApiResponse({
-    status: 200,
-    description: 'Edit Single Article',
-    type: [Article]
-  })
-  @ApiOperation({ summary: 'Edit Single Article' })
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
@@ -89,13 +97,9 @@ export class ArticleController {
   /**
    * delete single article
    */
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({
-    status: 200,
-    description: 'Delete Single Article',
-    type: [Article]
-  })
   @ApiOperation({ summary: 'Delete Single Article' })
   @Delete(':id')
   deleteSingleArticle(@Param('id') id: string, @Req() req) {
