@@ -50,7 +50,7 @@ export class ArticleService {
     }
 
     // create tag or find tag
-    if (tags.length > 0) {
+    if (tags?.length > 0) {
       for (const label of tags) {
         const tagEntity = await this.createOrGetTag(label);
         tagEntities.push(tagEntity);
@@ -144,7 +144,7 @@ export class ArticleService {
     });
 
     // if no articles
-    if (!articles || articles.length === 0) {
+    if (!articles || articles?.length === 0) {
       throw new HttpException('no posted articles', HttpStatus.BAD_REQUEST);
     }
 
@@ -175,7 +175,7 @@ export class ArticleService {
     });
 
     // if no articles return []
-    if (!articles || articles.length === 0) {
+    if (!articles || articles?.length === 0) {
       return [];
     }
 
@@ -275,7 +275,7 @@ export class ArticleService {
     }
 
     // create tag or find tag
-    if (tags.length > 0) {
+    if (tags?.length > 0) {
       for (const label of tags) {
         const tagEntity = await this.createOrGetTag(label);
         tagEntities.push(tagEntity);
