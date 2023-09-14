@@ -55,9 +55,10 @@ async function bootstrap() {
     */
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('Wipi Open Api')
-      .setDescription('Wipi Open Api Document')
+      .setTitle('Walking Distance')
+      .setDescription('WD API Document')
       .setVersion('1.0')
+      .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api-docs', app, document);
