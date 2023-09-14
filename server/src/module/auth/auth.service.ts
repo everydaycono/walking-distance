@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -51,7 +53,7 @@ export class AuthService {
     });
 
     if (isUserExist) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new ConflictException('User already exists');
     }
 
     // Encrypt password
@@ -91,10 +93,7 @@ export class AuthService {
     });
 
     if (!isExistUser) {
-      throw new HttpException(
-        'Incorrect user name or password',
-        HttpStatus.NOT_FOUND
-      );
+      throw new UnauthorizedException('Incorrect user name or password');
     }
 
     // email verification check
@@ -111,15 +110,12 @@ export class AuthService {
     });
 
     if (!isPasswordCorrect) {
-      throw new HttpException(
-        'Incorrect user name or password',
-        HttpStatus.NOT_FOUND
-      );
+      throw new UnauthorizedException('Incorrect user name or password');
     }
 
     // User status check ("locekd",'active')
     if (isExistUser.status === 'locked') {
-      throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException('Your account is locked');
     }
 
     // Create JWT TOKEN

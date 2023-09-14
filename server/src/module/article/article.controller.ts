@@ -13,10 +13,17 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { InputArticleType } from './types/article.type';
+import { ArticleDTO } from './dto/article.dto';
 
 @ApiTags('🌳Article')
 @Controller('article')
@@ -25,8 +32,16 @@ export class ArticleController {
   /**
    * create article
    */
-  @ApiResponse({ status: 201, description: 'Create Article', type: [Article] })
   @ApiOperation({ summary: 'Create Article' })
+  @ApiBody({
+    type: ArticleDTO.Request.createArticleDto
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: 'successfully created article',
+    type: [Article]
+  })
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtGuard)
   @Post()
