@@ -11,7 +11,14 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { TagService } from './tag.service';
 import { Tag } from './tag.entity';
@@ -28,8 +35,8 @@ export class TagController {
   /**
    * create tag
    */
-  @ApiResponse({ status: 201, description: 'create tag', type: [Tag] })
-  @ApiOperation({ summary: 'Create Tag' })
+
+  @ApiExcludeEndpoint()
   @Post()
   @Roles(Role.ADMIN)
   @UseGuards(JwtGuard)
@@ -41,8 +48,13 @@ export class TagController {
   /**
    * find all tag
    */
-  @ApiResponse({ status: 200, description: 'find all tag', type: [Tag] })
   @ApiOperation({ summary: 'Find all Tags' })
+  @ApiQuery({
+    name: '',
+    required: false,
+    description: 'default : null, example : tag1&tag2',
+    example: 'tag1&tag2'
+  })
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() queryParams): Promise<Tag[]> {
@@ -52,7 +64,11 @@ export class TagController {
   /**
    * find single tag
    */
-  @ApiResponse({ status: 200, description: 'find single tag', type: [Tag] })
+  @ApiParam({
+    name: 'id',
+    description: 'find single Tag',
+    required: true
+  })
   @ApiOperation({ summary: 'Find single Tag' })
   @Get(':id')
   findById(@Param('id') id: string) {
@@ -62,8 +78,7 @@ export class TagController {
   /**
    * edit single tag
    */
-  @ApiResponse({ status: 200, description: 'Edit single tag', type: [Tag] })
-  @ApiOperation({ summary: 'Edit single Tag' })
+  @ApiExcludeEndpoint()
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @Roles(Role.ADMIN)
@@ -75,9 +90,8 @@ export class TagController {
   /**
    * delete single tag
    */
+  @ApiExcludeEndpoint()
   @Delete(':id')
-  @ApiResponse({ status: 200, description: 'Delete single tag', type: [Tag] })
-  @ApiOperation({ summary: 'Delete single Tag' })
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @Roles(Role.ADMIN)
