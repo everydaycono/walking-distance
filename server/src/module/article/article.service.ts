@@ -32,8 +32,10 @@ export class ArticleService {
     const tagEntities: Tag[] = [];
 
     // require title and content
-    if (!title || !content) {
-      throw new BadRequestException('title and content are required');
+    if (!title || !content || !category || !status) {
+      throw new BadRequestException(
+        'title, category, content, status of articles are all required'
+      );
     }
 
     // create new article
