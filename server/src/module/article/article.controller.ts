@@ -75,10 +75,15 @@ export class ArticleController {
   /**
    * edit single article
    */
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Edit Single Article' })
   @ApiBearerAuth()
+  @ApiBody({
+    type: ArticleDTO.Request.EditArticleDto,
+    description:
+      '게시물 status : draft, publish, onlyme </br> 게시물 category : daily, study, tech, hobby, exercise'
+  })
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtGuard)
   @Patch(':id')
   editSingleArticle(
     @Param('id') id: string,
