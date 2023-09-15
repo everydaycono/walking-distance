@@ -111,6 +111,7 @@ const page: FC<pageProps> = async ({ params }) => {
       <Separator className="my-4" />
 
       {/* Comment */}
+      <ArticleComment articleId={articleData.id} />
     </div>
   );
 };
