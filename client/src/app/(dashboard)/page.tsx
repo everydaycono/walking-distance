@@ -30,7 +30,10 @@ const page: FC<pageProps> = async ({}) => {
             item.thumbnail ||
             'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80';
           return (
-            <div className="flex flex-col items-center md:flex-row md:max-w-2xl my-5">
+            <div
+              key={item.id}
+              className="flex flex-col items-center md:flex-row md:max-w-2xl my-5"
+            >
               <div className="w-48 h-32 bg-red-500 overflow-hidden">
                 <Image
                   width={192}

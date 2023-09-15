@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadFiles } from '@/utils/uploadthing/config';
@@ -21,6 +21,8 @@ const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
   const quillRef = useRef<ReactQuill>(null);
 
   const imageHandler = async () => {
+    if (typeof window === 'undefined') return;
+
     const input = document.createElement('input');
 
     input.setAttribute('type', 'file');
@@ -42,8 +44,7 @@ const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
                 'image',
                 'https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'
               );
-            },
-            onUploadProgress: (progress) => {}
+            }
           });
 
           const range = quillObj.getSelection(true)?.index ?? 0;
