@@ -2,7 +2,9 @@ export interface CreateArticleType {
   title: string;
   content: string;
   category: string;
-  tags: string[];
+  status: 'publish' | 'draft' | 'onlyme';
+  thumbnail?: string;
+  tags?: string[];
 }
 
 export interface CategoryType {
