@@ -1,6 +1,5 @@
 'use client';
 
-import QuillNoSSRWrapper from '@/components/wrapper/QuillWrapper';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import * as z from 'zod';
@@ -26,6 +25,7 @@ import { Separator } from '@/components/ui/separator';
 import ThumbnailImage from '@/components/ThumbnailImage';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CategoryType, CreateArticleType } from './article.type';
+import QuillWrapper from '@/components/wrapper/QuillWrapper';
 
 export type thumbNailType = {
   url: string;
@@ -144,15 +144,7 @@ export default function Page() {
 
           {/* content quill editor */}
           <Label>Content</Label>
-          <QuillNoSSRWrapper
-            // style={{
-            //   height: '280px'
-            // }}
-            // modules={modules}
-            // formats={formats}
-            // theme="snow"
-            onChange={handleChange}
-          />
+          <QuillWrapper onChange={handleChange} />
           <div className="lg:mt-16 mt-24"></div>
 
           {/* tag input */}

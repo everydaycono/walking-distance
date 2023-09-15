@@ -1,33 +1,51 @@
 'use client';
 
-import { FC, useMemo, useRef } from 'react';
+import {
+  FC,
+  LegacyRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadFiles } from '@/utils/uploadthing/config';
+import dynamic from 'next/dynamic';
 
-//@ts-ignore
-import ImageResize from 'quill-image-resize';
-Quill.register('modules/ImageResize', ImageResize);
+interface IWrappedComponent extends React.ComponentProps<typeof ReactQuill> {
+  forwardedRef: LegacyRef<ReactQuill>;
+}
+const ReactQuillBase = dynamic(
+  async () => {
+    const { default: ReactQuill } = await import('react-quill');
+
+    function QuillJS({ forwardedRef, ...props }: IWrappedComponent) {
+      return <ReactQuill ref={forwardedRef} {...props} />;
+    }
+
+    return QuillJS;
+  },
+  {
+    ssr: false
+  }
+);
 
 interface QuillNoSSRWrapperProps {
   className?: string;
   onChange?: (value: string) => void;
 }
-
-const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
-  className,
-  onChange
-}) => {
+const QuillWrapper: FC<QuillNoSSRWrapperProps> = ({ onChange, className }) => {
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill>(null);
 
-  const imageHandler = async () => {
-    if (typeof window === 'undefined') return;
-
+  const imageHandler = useCallback(async () => {
     const input = document.createElement('input');
-
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
+
     input.onchange = async () => {
       const file: File | null = input && input.files ? input.files[0] : null;
       if (quillRef.current && file) {
@@ -46,9 +64,7 @@ const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
               );
             }
           });
-
           const range = quillObj.getSelection(true)?.index ?? 0;
-
           const uploadImg = uploadFile[0];
           quillObj.deleteText(range, 1);
           quillObj.insertEmbed(range, 'image', uploadImg.url);
@@ -59,92 +75,158 @@ const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
         }
       }
     };
-  };
+  }, [quillRef.current]);
 
-  const modules = useMemo(() => {
-    return {
-      toolbar: {
-        container: [
-          //[{ 'font': [] }],
-          [{ header: [1, 2, 3, 4, false] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [
-            { list: 'ordered' },
-            { list: 'bullet' },
-            { indent: '-1' },
-            { indent: '+1' }
-          ],
-          ['link', 'image'],
-          [{ align: [] }, { color: [] }, { background: [] }], // dropdown with defaults from theme
-          ['clean']
+  const modules = {
+    toolbar: {
+      container: [
+        //[{ 'font': [] }],
+        [{ header: [1, 2, 3, 4, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [
+          { list: 'ordered' },
+          { list: 'bullet' },
+          { indent: '-1' },
+          { indent: '+1' }
         ],
-        handlers: {
-          image: imageHandler
-        }
-      },
-      ImageResize: {
-        parchment: Quill.import('parchment')
+        ['link', 'image'],
+        [{ align: [] }, { color: [] }, { background: [] }], // dropdown with defaults from theme
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler
       }
-    };
+    }
+  };
+  const formats = [
+    'header',
+    'font',
+    'size',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+    'video'
+  ];
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      setIsMounted(true);
+    }
   }, []);
 
+  if (!isMounted) return null;
+
   return (
-    <ReactQuill
-      style={{ height: '500px', maxWidth: '100%' }}
-      ref={quillRef}
-      theme="snow"
-      modules={modules}
-      onChange={onChange}
-    />
+    <>
+      <div>
+        <ReactQuillBase
+          className="h-96"
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          forwardedRef={quillRef}
+        />
+      </div>
+    </>
   );
 };
 
-export default QuillNoSSRWrapper;
+export default QuillWrapper;
 
-// import 'react-quill/dist/quill.snow.css';
-// import dynamic from 'next/dynamic';
+// interface QuillNoSSRWrapperProps {
+//   className?: string;
+//   onChange?: (value: string) => void;
+// }
 
-// export const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
-//   ssr: false,
-//   loading: () => <p>Loading ...</p>
-// });
+// const QuillNoSSRWrapper: FC<QuillNoSSRWrapperProps> = ({
+//   className,
+//   onChange
+// }) => {
+//   const quillRef = useRef<ReactQuill>(null);
 
-// export const modules = {
-//   toolbar: [
-//     [{ header: '1' }, { header: '2' }, { font: [] }],
-//     [{ size: [] }],
-//     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-//     [
-//       { list: 'ordered' },
-//       { list: 'bullet' },
-//       { indent: '-1' },
-//       { indent: '+1' }
-//     ],
-//     ['link', 'image', 'video'],
-//     ['clean']
-//   ],
-//   clipboard: {
-//     // toggle to add extra line breaks when pasting HTML:
-//     matchVisual: false
-//   }
+//   const imageHandler = async () => {
+//     const input = document.createElement('input');
+
+//     input.setAttribute('type', 'file');
+//     input.setAttribute('accept', 'image/*');
+//     input.click();
+//     input.onchange = async () => {
+//       const file: File | null = input && input.files ? input.files[0] : null;
+//       if (quillRef.current && file) {
+//         let quillObj = quillRef.current.getEditor();
+
+//         try {
+//           const uploadFile = await uploadFiles({
+//             files: [new File([file], file.name, { type: file.type })],
+//             endpoint: 'imageUploader',
+//             onUploadBegin: () => {
+//               const range = quillObj.getSelection(true)?.index ?? 0;
+//               quillObj.insertEmbed(
+//                 range,
+//                 'image',
+//                 'https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'
+//               );
+//             }
+//           });
+
+//           const range = quillObj.getSelection(true)?.index ?? 0;
+
+//           const uploadImg = uploadFile[0];
+//           quillObj.deleteText(range, 1);
+//           quillObj.insertEmbed(range, 'image', uploadImg.url);
+//           quillObj.setSelection(range, 1);
+//         } catch (error) {
+//           console.error(error, 'This is an error message');
+//           return false;
+//         }
+//       }
+//     };
+//   };
+
+//   const modules = useMemo(() => {
+//     return {
+//       toolbar: {
+//         container: [
+//           //[{ 'font': [] }],
+//           [{ header: [1, 2, 3, 4, false] }],
+//           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+//           [
+//             { list: 'ordered' },
+//             { list: 'bullet' },
+//             { indent: '-1' },
+//             { indent: '+1' }
+//           ],
+//           ['link', 'image'],
+//           [{ align: [] }, { color: [] }, { background: [] }], // dropdown with defaults from theme
+//           ['clean']
+//         ],
+//         handlers: {
+//           image: imageHandler
+//         }
+//       }
+//     };
+//   }, []);
+
+//   return (
+//     <ReactQuill
+//       style={{ height: '500px', maxWidth: '100%' }}
+//       ref={quillRef}
+//       theme="snow"
+//       modules={modules}
+//       onChange={onChange}
+//     />
+//   );
 // };
-// /*
-//  * Quill editor formats
-//  * See https://quilljs.com/docs/formats/
-//  */
-// export const formats = [
-//   'header',
-//   'font',
-//   'size',
-//   'bold',
-//   'italic',
-//   'underline',
-//   'strike',
-//   'blockquote',
-//   'list',
-//   'bullet',
-//   'indent',
-//   'link',
-//   'image',
-//   'video'
-// ];
+
+// export default QuillNoSSRWrapper;
+
+//
+//
+//
+//
