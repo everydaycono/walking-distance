@@ -19,4 +19,5 @@ tsconfig.tsbuildinfo
 *error.log
 *debug.log
 *.conf
+.dockerignore
 
