@@ -5,6 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import Avatar from '../Avatar';
 import { Moon, PenSquare, SunMoon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Navbar = () => {
   const { data, status: loginStatus } = useSession();
@@ -14,10 +15,19 @@ const Navbar = () => {
   return (
     <nav className="border-gray-200 transition-none bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
       <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto py-4 px-4">
-        <div className="flex">
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            WD
-          </span>
+        <div className="">
+          <Link className="flex items-center" href={'/'}>
+            <Image
+              height={40}
+              width={40}
+              src="/walkdi.svg"
+              alt="walki"
+              priority
+            />
+            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+              WalkDi
+            </span>
+          </Link>
         </div>
 
         {/* visible on sm-md size */}
