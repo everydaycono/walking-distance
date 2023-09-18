@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import type { Metadata, ResolvingMetadata } from 'next';
 import ArticleComment from '@/components/comment/ArticleComment';
+import { isValid } from 'zod';
+import { isValidURL } from '@/utils/userImgurl';
 interface pageProps {
   params: {
     userId: string;
@@ -58,13 +60,11 @@ const page: FC<pageProps> = async ({ params }) => {
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
               <Image
+                priority={false}
                 className="w-10 h-10 rounded-full"
                 width={40}
                 height={40}
-                src={
-                  articleData.user.avatar ??
-                  'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80'
-                }
+                src={isValidURL(articleData.user.avatar)}
                 alt="Neil image"
               />
             </div>
@@ -98,7 +98,8 @@ const page: FC<pageProps> = async ({ params }) => {
       {articleData.thumbnail && (
         <div className="flex justify-center my-5">
           <Image
-            src={articleData.thumbnail}
+            priority={false}
+            src={isValidURL(articleData.thumbnail)}
             width={500}
             height={500}
             alt={articleData.thumbnail}
