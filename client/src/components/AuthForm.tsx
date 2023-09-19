@@ -1,11 +1,11 @@
 'use client';
 import { registerType, registerUser } from '@/services/api';
 import { useMutation } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import Link from 'next/link';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import LoadingModal from './modal/LoadingModal';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 interface AuthFormProps {
   type: 'register' | 'login';
@@ -98,11 +98,26 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
     handleRegister(rest as registerType);
   };
 
-  const login = () => {};
+  const login = () => {
+    signIn('credentials-login', {
+      email: authFormValue.email,
+      password: authFormValue.password
+    });
+  };
 
   const handleAuthSubmitButton = () => {
     type === 'register' ? register() : login();
   };
+
+  useEffect(() => {
+    // get URL
+    const searchParams = window.location.search;
+    const decodedParam = decodeURIComponent(searchParams);
+
+    // delete ?error= from decodedURI searchParams
+    const decodedURI = decodedParam.replace('?error=', '');
+    setSignupError(decodedURI);
+  }, []);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
