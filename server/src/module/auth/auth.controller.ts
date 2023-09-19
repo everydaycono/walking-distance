@@ -11,7 +11,8 @@ import {
   Get,
   Query,
   HttpException,
-  Req
+  Req,
+  Param
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/user.entity';
@@ -19,7 +20,6 @@ import {
   ApiBody,
   ApiExcludeEndpoint,
   ApiOperation,
-  ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
 
@@ -73,6 +73,22 @@ export class AuthController {
   }
 
   /**
+   * Social Login
+   */
+  @Post('social-login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Social Login User' })
+  // @ApiBody({
+  //   type: AuthDTO.Request.LoginUserDto
+  // })
+  socialLogin(
+    @Body() user: Pick<User, 'email' | 'id' | 'avatar'>,
+    type: string
+  ) {
+    return this.authService.socialLogin(user, type);
+  }
+
+  /**
    * Refresh
    */
   @UseGuards(RefreshGuard)
@@ -99,18 +115,18 @@ export class AuthController {
     return this.authService.verifyEmail(verifyToken);
   }
 
-  // social login
+  // social redirect
   @ApiExcludeEndpoint()
-  @Get('social-login')
+  @Get('social-redirect')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
-  async socialLogin() {
+  async socialRedirect() {
     return 'redirecting to github...';
   }
 
   // github callback
   @ApiExcludeEndpoint()
-  @Get('github-callback')
+  @Get('github-callback/')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req) {
@@ -132,7 +148,8 @@ export class AuthController {
       userName: user.username,
       avatar: user.photos[0].value
     };
-    return this.authService.socialLogin(newUser, 'github');
+    return this.authService.socialUser(newUser);
+    // return this.authService.socialLogin(newUser, 'github');
   }
 
   // admin
