@@ -27,9 +27,10 @@ import { User } from './module/user/user.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: false,
+      synchronize: process.env.NODE_ENV === 'dev' ? true : false,
       ssl: {
-        rejectUnauthorized: true
+        // 개발 환경에서만 rejectUnauthorized를 false로 설정
+        rejectUnauthorized: process.env.NODE_ENV !== 'dev'
       },
       entities: [User, Article, Category, Comment, Tag]
     }),

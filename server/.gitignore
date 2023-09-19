@@ -10,8 +10,7 @@ test-results
 tsconfig.tsbuildinfo
 
 # ENV
-.env
-.env.prod
+.env.*
 
 
 *.local
