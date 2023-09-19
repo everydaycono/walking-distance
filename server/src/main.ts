@@ -1,9 +1,13 @@
+import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CategoryService } from './module/category/category.service';
+
+const environment = process.env.NODE_ENV || 'dev';
+dotenv.config({ path: `.env.${environment}` });
 
 async function bootstrap() {
   /*
@@ -53,7 +57,7 @@ async function bootstrap() {
     | Initialize Swagger and APP
     |--------------------------------------------------------------------------
     */
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'prd') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Walking Distance')
       .setDescription('Walking Distance API Document')
