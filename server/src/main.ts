@@ -1,13 +1,13 @@
 import * as dotenv from 'dotenv';
+const environment = process.env.NODE_ENV || 'dev';
+dotenv.config({ path: `.env.${environment}` });
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CategoryService } from './module/category/category.service';
-
-const environment = process.env.NODE_ENV || 'dev';
-dotenv.config({ path: `.env.${environment}` });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
