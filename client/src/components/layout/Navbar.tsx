@@ -70,24 +70,23 @@ const Navbar = () => {
               <SunMoon />
             </div>
 
-            {loginStatus === 'loading' ? (
-              <div className="flex mx-5 items-center">
+            <div className="flex mx-5 items-center">
+              {loginStatus === 'loading' ? (
                 <div className="w- h-7 bg-gray-200 rounded-sm dark:bg-gray-700" />
-              </div>
-            ) : (
-              loginStatus === 'authenticated' && (
-                <div className="flex items-center mx-5">
-                  <Link href={'/article/new-post'}>
+              ) : (
+                loginStatus === 'authenticated' && (
+                  <Link href="/article/new-post">
                     <PenSquare
                       size={20}
                       className="hover:scale-110 transition duration-200 cursor-pointer"
                     />
                   </Link>
-                </div>
-              )
-            )}
+                )
+              )}
+            </div>
+
             {/* USER STATE */}
-            {loginStatus === 'loading' && (
+            {loginStatus === 'loading' ? (
               <svg
                 className="w-8 h-8 text-gray-200 dark:text-gray-700 mr-4"
                 aria-hidden="true"
@@ -97,9 +96,11 @@ const Navbar = () => {
               >
                 <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
               </svg>
+            ) : loginStatus === 'unauthenticated' ? (
+              <Avatar />
+            ) : (
+              <Avatar user={data?.user} />
             )}
-            {loginStatus === 'unauthenticated' && <Avatar />}
-            {loginStatus === 'authenticated' && <Avatar user={data.user} />}
           </div>
         </div>
       </div>
