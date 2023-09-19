@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -83,6 +84,7 @@ export class AuthService {
     };
   }
 
+  // login
   async login(user: Pick<User, 'email' | 'password'>) {
     if (!user.email || !user.password) {
       throw new BadRequestException('Please enter all required fields');
@@ -128,6 +130,57 @@ export class AuthService {
       { refreshToken: REFRESHTK }
     );
 
+    const userInfo = {
+      email: isExistUser.email,
+      firstName: isExistUser.firstName,
+      lastName: isExistUser.lastName,
+      avatar: isExistUser.avatar,
+      role: isExistUser.role,
+      id: isExistUser.id
+    };
+
+    // const devExpriesTime = 3 * 60 * 60 * 1000;
+    const devExpriesTime = 5 * 1000;
+    const prdExpriesTime = 15 * 60 * 1000;
+    const EXPIRE_TIME =
+      process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
+
+    return Object.assign(userInfo, {
+      token: {
+        access: ACCESSTK,
+        refresh: REFRESHTK,
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME)
+      }
+    });
+  }
+
+  // social login
+  async socialLogin(user: Pick<User, 'email' | 'id' | 'avatar'>, type: string) {
+    // format email with github username
+    const formatEmail = `${user.email}@${type}`;
+
+    // user exist check
+    const isExistUser = await this.userRepository.findOne({
+      where: { email: formatEmail, type }
+    });
+
+    // if not exist user in db throw not found error
+    if (!isExistUser) {
+      throw new NotFoundException('User not found. Please sign up with github');
+    }
+
+    // if already exist user in db
+    // Create JWT TOKEN
+    const ACCESSTK = this.generateAccessToken(isExistUser);
+    const REFRESHTK = this.generateRefereshToken(isExistUser);
+
+    // Save refresh token in db
+    this.userRepository.update(
+      { email: isExistUser.email },
+      { refreshToken: REFRESHTK }
+    );
+
+    // define userInfo
     const userInfo = {
       email: isExistUser.email,
       firstName: isExistUser.firstName,
@@ -217,56 +270,69 @@ export class AuthService {
     return true;
   }
 
-  async socialLogin(user: socialLoginType, type: 'github' | 'google') {
-    // user exist check
+  // async socialLogin(user: socialLoginType, type: 'github' | 'google') {
+  //   // user exist check
+  //   const isExistUser = await this.userRepository.findOne({
+  //     where: { email: user.userName, type }
+  //   });
+
+  //   // Client 는 회원가입 창으로 넘김.
+  //   if (!isExistUser) {
+  //     // throw new NotFoundException('User not found, redirect to register page');
+  //     throw new RedirectException({
+  //       userInfo: { ...user, type }
+  //     });
+  //   }
+
+  //   // user 가 있다면 login
+
+  //   // 체크리스트
+  //   // [x] 이메일 verified (소셜로그인은 verified)
+  //   // [x] password check (소셜로그인은 password 없음)
+  //   // [✅] user status (locked,active 체크)
+  //   if (isExistUser.status === 'locked') {
+  //     throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
+  //     // throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
+  //   }
+
+  //   // Create JWT TOKEN
+  //   const ACCESSTK = this.generateAccessToken(isExistUser);
+  //   const REFRESHTK = this.generateRefereshToken(isExistUser);
+
+  //   // Save refresh token in db
+  //   this.userRepository.update(
+  //     { id: isExistUser.id },
+  //     { refreshToken: REFRESHTK }
+  //   );
+
+  //   const userInfo = {
+  //     email: isExistUser.email,
+  //     firstName: isExistUser.firstName,
+  //     lastName: isExistUser.lastName,
+  //     avatar: isExistUser.avatar,
+  //     role: isExistUser.role,
+  //     id: isExistUser.id
+  //   };
+
+  //   return Object.assign(userInfo, {
+  //     token: {
+  //       access: ACCESSTK,
+  //       refresh: REFRESHTK
+  //     }
+  //   });
+  // }
+
+  // social user
+  async socialUser(newUser: { id: string; userName: string; avatar: string }) {
+    // format email
+    const formatEmail = `${newUser.userName}@github`;
+
+    // find user by email
     const isExistUser = await this.userRepository.findOne({
-      where: { email: user.userName, type }
+      where: { email: formatEmail }
     });
 
-    // Client 는 회원가입 창으로 넘김.
-    if (!isExistUser) {
-      // throw new NotFoundException('User not found, redirect to register page');
-      throw new RedirectException({
-        userInfo: { ...user, type }
-      });
-    }
-
-    // user 가 있다면 login
-
-    // 체크리스트
-    // [x] 이메일 verified (소셜로그인은 verified)
-    // [x] password check (소셜로그인은 password 없음)
-    // [✅] user status (locked,active 체크)
-    if (isExistUser.status === 'locked') {
-      throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
-      // throw new HttpException('Your account is locked', HttpStatus.FORBIDDEN);
-    }
-
-    // Create JWT TOKEN
-    const ACCESSTK = this.generateAccessToken(isExistUser);
-    const REFRESHTK = this.generateRefereshToken(isExistUser);
-
-    // Save refresh token in db
-    this.userRepository.update(
-      { id: isExistUser.id },
-      { refreshToken: REFRESHTK }
-    );
-
-    const userInfo = {
-      email: isExistUser.email,
-      firstName: isExistUser.firstName,
-      lastName: isExistUser.lastName,
-      avatar: isExistUser.avatar,
-      role: isExistUser.role,
-      id: isExistUser.id
-    };
-
-    return Object.assign(userInfo, {
-      token: {
-        access: ACCESSTK,
-        refresh: REFRESHTK
-      }
-    });
+    return { newUser, isExistUser };
   }
 
   generateAccessToken(
