@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "------local----dev": "server => localhost",
+    "dev:local": "env-cmd -f .env.local next dev",
+    "------local----dev to hosted server": "server => ipaddress",
+    "dev": "env-cmd -f .env next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -26,6 +29,7 @@
     "axios": "^1.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "env-cmd": "^10.1.0",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "lucide-react": "^0.274.0",
