@@ -30,9 +30,9 @@ const page: FC<pageProps> = async ({}) => {
           return (
             <div
               key={item.id}
-              className="flex flex-col items-center md:flex-row md:max-w-2xl my-5"
+              className="flex items-center flex-row md:max-w-2xl my-5"
             >
-              <div className="w-48 h-32 bg-red-500 overflow-hidden">
+              <div className="w-48 h-32 overflow-hidden">
                 <Image
                   priority={false}
                   width={192}
