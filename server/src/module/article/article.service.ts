@@ -145,8 +145,13 @@ export class ArticleService {
       }
     });
 
+    // article의 결과가 빈 배열일떄
+    if (articles?.length === 0) {
+      return [];
+    }
+
     // if no articles
-    if (!articles || articles?.length === 0) {
+    if (!articles) {
       throw new HttpException('no posted articles', HttpStatus.BAD_REQUEST);
     }
 
