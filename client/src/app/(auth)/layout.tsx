@@ -1,4 +1,5 @@
 'use client';
+import LoginFormLoader from '@/components/Loader/LoginFormLoader';
 import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
 import { FC, Suspense } from 'react';
@@ -11,7 +12,7 @@ const AuthLayout: FC<layoutProps> = ({ children }) => {
   const { status } = useSession();
 
   if (status === 'loading') {
-    return <div>Loading</div>;
+    return <LoginFormLoader />;
   }
 
   if (status === 'authenticated') {
@@ -20,7 +21,7 @@ const AuthLayout: FC<layoutProps> = ({ children }) => {
 
   //   Only not  logged in user can access
   return (
-    <Suspense fallback={<div>Loading</div>}>
+    <Suspense fallback={<LoginFormLoader />}>
       <section>{children}</section>
     </Suspense>
   );
