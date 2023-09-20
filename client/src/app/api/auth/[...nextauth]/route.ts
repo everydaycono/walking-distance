@@ -95,6 +95,65 @@ const authOptions: AuthOptions = {
       // client signIn() ID 값
       id: 'credentials-login',
       type: 'credentials'
+    }),
+    CredentialsProvider({
+      name: 'Login page',
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'email',
+          placeholder: 'Email'
+        },
+        id: {
+          label: 'Id',
+          type: 'text',
+          placeholder: 'id'
+        },
+        type: {
+          label: 'Type',
+          type: 'text',
+          placeholder: 'type'
+        },
+        avatar: {
+          label: 'Avatar',
+          type: 'text',
+          placeholder: 'avatar'
+        }
+      },
+      async authorize(credentials, req) {
+        if (
+          credentials?.email === '' ||
+          credentials?.id === '' ||
+          credentials?.type === ''
+        ) {
+          throw new Error('Coudnt find credentials with social login');
+        }
+
+        try {
+          const { data } = await axios.post(
+            `${process.env.SERVER_BASE_URL}/api/auth/social-login`,
+            {
+              email: credentials?.email,
+              id: credentials?.id,
+              avatar: credentials?.avatar,
+              type: credentials?.type
+            }
+          );
+          const user = data as IUser;
+          return user;
+        } catch (error) {
+          if (isAxiosError(error)) {
+            throw new Error(
+              error.response?.data.message ||
+                'Unauthorized - check your email and password'
+            );
+          }
+          // Return null if user data could not be retrieved
+          throw new Error('Unauthorized - Social login');
+        }
+      },
+      id: 'github-login',
+      type: 'credentials'
     })
   ],
   pages: {
