@@ -50,7 +50,9 @@ export class TagController {
    */
   @ApiOperation({ summary: 'Find all Tags' })
   @ApiQuery({
-    name: '',
+    type: [String],
+    isArray: true,
+    name: 'label',
     required: false,
     description: 'default : null, example : tag1&tag2',
     example: 'tag1&tag2'
