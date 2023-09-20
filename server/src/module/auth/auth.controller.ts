@@ -81,11 +81,8 @@ export class AuthController {
   // @ApiBody({
   //   type: AuthDTO.Request.LoginUserDto
   // })
-  socialLogin(
-    @Body() user: Pick<User, 'email' | 'id' | 'avatar'>,
-    type: string
-  ) {
-    return this.authService.socialLogin(user, type);
+  socialLogin(@Body() user: Pick<User, 'email' | 'id' | 'avatar' | 'type'>) {
+    return this.authService.socialLogin(user);
   }
 
   /**
@@ -148,8 +145,7 @@ export class AuthController {
       userName: user.username,
       avatar: user.photos[0].value
     };
-    return this.authService.socialUser(newUser);
-    // return this.authService.socialLogin(newUser, 'github');
+    return newUser;
   }
 
   // admin
