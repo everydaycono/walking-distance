@@ -2,6 +2,7 @@ import { ArticleService } from './../article/article.service';
 import { TagService } from '../tag/tag.service';
 import { CategoryService } from './../category/category.service';
 import { Injectable } from '@nestjs/common';
+import { CategoryType } from './types/category.type';
 
 @Injectable()
 export class SearchService {
@@ -12,17 +13,17 @@ export class SearchService {
   ) {}
 
   // search article in title,content
-  async searchArticleByTitleOrContent(keyword) {
+  async searchArticleByTitleOrContent(keyword: string) {
     return await this.articleService.search(keyword);
   }
 
   // search article by category
-  async searchArticleByCategory(keyword) {
-    return await this.categoryService.findByLabel(keyword);
+  async searchArticleByCategory(label: CategoryType) {
+    return await this.categoryService.findByLabel(label);
   }
 
   // search article by tag
-  async searchArticleByTag(keyword) {
-    return await this.tagService.findByTag(keyword);
+  async searchArticleByTag(label: string) {
+    return await this.tagService.findByTag(label);
   }
 }
