@@ -211,13 +211,6 @@ export class AuthService {
    */
   async socialRegister(user: Pick<User, 'email' | 'id' | 'avatar' | 'type'>) {
     const { avatar, email, id, type } = user;
-
-    // const newSocialUserInfo = {
-    //   isEmailVerified: true,
-    //   status: 'active',
-    //   role:"visitor"
-    // };
-    const REFRESHTK = this.generateRefereshToken(user);
     const newSocialUser = this.userRepository.create({
       email: `${email}@${type}`,
       avatar,
@@ -225,23 +218,34 @@ export class AuthService {
       firstName: email,
       lastName: type,
       password: passwordHash(id),
-      isEmailVerified: true,
-      refreshToken: REFRESHTK
+      isEmailVerified: true
     });
-    const ACCESSTK = this.generateAccessToken(newSocialUser);
+    const newUser = await this.userRepository.save(newSocialUser);
 
-    await this.userRepository.save(newSocialUser);
+    const ACCESSTK = this.generateAccessToken(newUser);
+    const REFRESHTK = this.generateRefereshToken(newUser);
 
-    delete newSocialUser.emailVerificationExpiry;
-    delete newSocialUser.emailVerificationToken;
-    delete newSocialUser.isEmailVerified;
+    this.userRepository.update(
+      { email: newUser.email },
+      { refreshToken: REFRESHTK }
+    );
+
+    const userInfo = {
+      email: newUser.email,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      avatar: newUser.avatar,
+      role: newUser.role,
+      id: newUser.id,
+      type: newUser.type
+    };
 
     const devExpriesTime = 5 * 1000;
     const prdExpriesTime = 15 * 60 * 1000;
     const EXPIRE_TIME =
       process.env.NODE_ENV === 'dev' ? devExpriesTime : prdExpriesTime;
 
-    return Object.assign(newSocialUser, {
+    return Object.assign(userInfo, {
       token: {
         access: ACCESSTK,
         refresh: REFRESHTK,
