@@ -11,7 +11,10 @@ export class SearchController {
    * search
    */
   @Get('/article')
-  async searchArticle(@Query('keyword') keyword) {
-    return await this.searchService.searchArticle('article', keyword);
+  async searchArticleTitleOrContent(@Query('keyword') keyword) {
+    return await this.searchService.searchArticleTitleOrContent(
+      'article',
+      keyword
+    );
   }
 }
