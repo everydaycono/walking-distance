@@ -20,7 +20,6 @@ import {
   ApiQuery,
   ApiTags
 } from '@nestjs/swagger';
-import { Article } from './article.entity';
 import { JwtGuard } from '../auth/guard/access-jwt.guard';
 import { InputArticleType } from './types/article.type';
 import { ArticleDTO } from './dto/article.dto';
