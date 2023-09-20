@@ -14,6 +14,8 @@ import { Category } from './module/category/category.entity';
 import { Comment } from './module/comment/comment.entity';
 import { Tag } from './module/tag/tag.entity';
 import { User } from './module/user/user.entity';
+import { SearchModule } from './module/search/search.module';
+import { Search } from './module/search/search.entity';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { User } from './module/user/user.entity';
         // 개발 환경에서만 rejectUnauthorized를 false로 설정
         rejectUnauthorized: process.env.NODE_ENV !== 'dev'
       },
-      entities: [User, Article, Category, Comment, Tag]
+      entities: [User, Article, Category, Comment, Tag, Search]
     }),
     UserModule,
     AuthModule,
@@ -41,7 +43,8 @@ import { User } from './module/user/user.entity';
     ArticleModule,
     CategoryModule,
     CommentModule,
-    TagModule
+    TagModule,
+    SearchModule
   ]
 })
 export class AppModule {}
