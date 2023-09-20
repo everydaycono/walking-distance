@@ -333,4 +333,16 @@ export class ArticleService {
     await this.articleRepository.delete({ id: articleId });
     return { message: 'successfully deleted article' };
   }
+
+  /**
+   * search article by title and content -------------------------------
+   */
+  async search(keyword) {
+    return await this.articleRepository
+      .createQueryBuilder('article')
+      .where('article.title LIKE :keyword')
+      .orWhere('article.content LIKE :keyword')
+      .setParameter('keyword', `%${keyword}%`)
+      .getMany();
+  }
 }

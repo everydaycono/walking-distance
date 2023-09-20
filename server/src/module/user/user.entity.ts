@@ -33,27 +33,27 @@ export class User {
   password: string;
 
   @Column({ length: 500, default: null })
-  avatar: string; // avatar
+  avatar: string;
 
   @Column({ length: 500, nullable: null })
   @IsEmail()
   @MinLength(5, {
     message: 'email must be at least 5 characters'
   })
-  email: string; // email
+  email: string;
 
   @Column('simple-enum', { enum: ['admin', 'visitor'], default: 'visitor' })
-  role: string; // user role
+  role: string;
 
   @Column('simple-enum', { enum: ['locked', 'active'], default: 'active' })
-  status: string; // status
+  status: string;
 
   @Column({ default: 'normal' })
-  type: string; // 用户类型
+  type: string;
 
   @Exclude()
   @Column({ length: 500, default: null })
-  refreshToken: string; // 用户类型
+  refreshToken: string;
 
   @Column({ type: 'boolean', default: false })
   isEmailVerified: boolean;

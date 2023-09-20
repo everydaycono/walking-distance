@@ -14,6 +14,7 @@ import { Category } from './module/category/category.entity';
 import { Comment } from './module/comment/comment.entity';
 import { Tag } from './module/tag/tag.entity';
 import { User } from './module/user/user.entity';
+import { SearchModule } from './module/search/search.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { User } from './module/user/user.entity';
     ArticleModule,
     CategoryModule,
     CommentModule,
-    TagModule
+    TagModule,
+    SearchModule
   ]
 })
 export class AppModule {}

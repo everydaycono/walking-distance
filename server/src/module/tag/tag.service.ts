@@ -36,18 +36,24 @@ export class TagService {
    * find all tag
    */
   async findAll(queryParams): Promise<Tag[]> {
-    let tagLabels = queryParams;
+    const { label } = queryParams;
+
+    let tagLabel;
     let tags;
 
-    // queryParams가 object인 경우 key값꺼내서 배열로 만들기
+    // queryParams가 object인 경우 values값 꺼내서 배열로 만들기
     if (!Array.isArray(queryParams)) {
-      tagLabels = Object.keys(queryParams);
+      tagLabel = Object.values(queryParams);
+      // 이미 배열이라면 그대로 return
+    } else {
+      tagLabel = label;
     }
+
     // query filter해야하는게있어서 where in으로 array로 find
-    if (tagLabels.length > 0) {
+    if (tagLabel?.length > 0) {
       tags = await this.tagRepository.find({
         where: {
-          label: In(tagLabels)
+          label: In(tagLabel)
         }
       });
       // queryParams이 존재하지않는경우 전체 결과 조회
@@ -63,7 +69,7 @@ export class TagService {
   }
 
   /**
-   * find by tag
+   * find single tag by id
    */
   async findById(id: string): Promise<Tag> {
     // find tag by id in database
@@ -77,6 +83,26 @@ export class TagService {
     // if not exist throw error
     if (!existTag) {
       throw new BadRequestException(`Tag not found ${id}`);
+    }
+
+    return existTag;
+  }
+
+  /**
+   * find singel tag by label
+   */
+  async findByTag(label: string): Promise<Tag> {
+    // find tag by id in database
+    const existTag = await this.tagRepository.findOne({
+      where: { label },
+      relations: {
+        articles: true
+      }
+    });
+
+    // if not exist throw error
+    if (!existTag) {
+      throw new BadRequestException(`Tag not found ${label}`);
     }
 
     return existTag;
