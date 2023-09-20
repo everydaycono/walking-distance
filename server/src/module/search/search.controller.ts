@@ -8,13 +8,26 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   /**
-   * search
+   * search article by title or content
    */
   @Get('/article')
-  async searchArticleTitleOrContent(@Query('keyword') keyword) {
-    return await this.searchService.searchArticleTitleOrContent(
-      'article',
-      keyword
-    );
+  searchArticleByTitleOrContent(@Query('keyword') keyword) {
+    return this.searchService.searchArticleByTitleOrContent(keyword);
+  }
+
+  /**
+   * search article by category
+   */
+  @Get('/article/category')
+  searchArticleByCategory(@Query('keyword') keyword) {
+    return this.searchService.searchArticleByCategory(keyword);
+  }
+
+  /**
+   * search article by tag
+   */
+  @Get('/article/tag')
+  searchArticleByTag(@Query('keyword') keyword) {
+    return this.searchService.searchArticleByTag(keyword);
   }
 }
