@@ -16,13 +16,7 @@ export type commentType = {
   updateAt: string;
   pass: boolean;
   user: User;
-  children: {
-    id: number;
-    content: string;
-    createAt: string;
-    updateAt: string;
-    user: User;
-  }[];
+  children: commentType[];
 };
 
 export interface User {
