@@ -26,6 +26,13 @@ export interface User {
   email: string;
 }
 
+export type UpdateCommentType = {
+  commentId: number;
+  content: string;
+};
+
+export type DeleteCommentType = Omit<UpdateCommentType, 'content'>;
+
 export const articleAPI = {
   // create article
   createArticle: async (payload: CreateArticleType) => {
@@ -49,5 +56,15 @@ export const articleAPI = {
   }: Pick<createPostType, 'articleId'>) => {
     const { data } = await api(`/api/comment/article/${articleId}`);
     return data as commentType[];
+  },
+  updateComment: async ({ commentId, content }: UpdateCommentType) => {
+    const { data } = await AuthApi.patch(`/api/comment/${commentId}`, {
+      content
+    });
+    return data;
+  },
+  deleteComment: async ({ commentId }: DeleteCommentType) => {
+    const { data } = await AuthApi.delete(`/api/comment/${commentId}`);
+    return data;
   }
 };
