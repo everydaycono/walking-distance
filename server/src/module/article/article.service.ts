@@ -335,7 +335,7 @@ export class ArticleService {
   }
 
   /**
-   * search article
+   * search article by title and content -------------------------------
    */
   async search(keyword) {
     return await this.articleRepository
