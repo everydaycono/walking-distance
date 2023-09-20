@@ -100,7 +100,8 @@ export class CategoryService implements OnApplicationBootstrap {
     const existCategory = await this.categoryRepository.findOne({
       where: {
         label
-      }
+      },
+      relations: ['articles']
     });
 
     // if no category database with current label
