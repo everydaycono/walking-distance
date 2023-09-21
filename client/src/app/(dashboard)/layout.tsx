@@ -21,7 +21,7 @@ const pathNameFunction = (pathName: string) => {
   }
   return pathName;
 };
-const layout: FC<layoutProps> = ({ children }) => {
+const DashboardLayout: FC<layoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [category, setCategory] = useState('');
 
@@ -235,4 +235,4 @@ const layout: FC<layoutProps> = ({ children }) => {
   );
 };
 
-export default layout;
+export default DashboardLayout;

@@ -15,7 +15,7 @@ export interface Params {
   label: string[];
 }
 
-const page: FC<pageProps> = ({ params }) => {
+const CategoryPage: FC<pageProps> = ({ params }) => {
   const {
     data: categoryList,
     isLoading: isCategoryLoading,
@@ -100,4 +100,4 @@ const page: FC<pageProps> = ({ params }) => {
   );
 };
 
-export default page;
+export default CategoryPage;

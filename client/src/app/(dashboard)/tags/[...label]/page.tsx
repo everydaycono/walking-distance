@@ -15,7 +15,7 @@ export interface Params {
   label: string[];
 }
 
-const page: FC<pageProps> = ({ params }) => {
+const TagPage: FC<pageProps> = ({ params }) => {
   const {
     data: tagList,
     isLoading: isTagLoading,
@@ -98,4 +98,4 @@ const page: FC<pageProps> = ({ params }) => {
   );
 };
 
-export default page;
+export default TagPage;
