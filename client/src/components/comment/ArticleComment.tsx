@@ -17,6 +17,7 @@ import ReplyComment from './ReplyComment';
 import NestedComment from './NestedComment';
 import { useSession } from 'next-auth/react';
 import { Input } from '../ui/input';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface ArticleCommentProps {
   articleId: string;
@@ -24,6 +25,8 @@ interface ArticleCommentProps {
 
 const ArticleComment: FC<ArticleCommentProps> = ({ articleId }) => {
   const { data: userData, status } = useSession();
+  const router = useRouter();
+  const pathName = usePathname();
 
   const [content, setContent] = useState('');
   const [replyContent, setReplyContent] = useState({
@@ -113,6 +116,11 @@ const ArticleComment: FC<ArticleCommentProps> = ({ articleId }) => {
   const handlePostComment = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (status !== 'authenticated') {
+      window.sessionStorage.setItem('previousPath', pathName);
+      router.push('/login');
+      return;
+    }
     postComment({
       articleId,
       content
@@ -173,20 +181,31 @@ const ArticleComment: FC<ArticleCommentProps> = ({ articleId }) => {
           <div className="grid w-full gap-1 mt-4 mb-3">
             <Label htmlFor="message-2">Your Message</Label>
             <Textarea
+              disabled={status !== 'authenticated'}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Type your message here."
+              placeholder={
+                status !== 'authenticated'
+                  ? 'Sign in to comment'
+                  : 'Type your message here.'
+              }
               id="message-2"
             />
           </div>
           <div className="w-full flex justify-between mb-3">
-            <p className="text-sm text-muted-foreground">
-              Your message will be copied to the support team.
-            </p>
-            <Button className="py-0" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Post Comment
-            </Button>
+            <p className="text-sm text-muted-foreground">Make your comment</p>
+
+            {status !== 'authenticated' ? (
+              <Button className="py-0 h-8" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Sign in
+              </Button>
+            ) : (
+              <Button className="py-0" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Post Comment
+              </Button>
+            )}
           </div>
         </form>
         {commentList?.map((item) => {
