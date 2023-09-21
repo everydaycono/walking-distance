@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { UploadDropzone } from '@uploadthing/react';
 
 import { OurFileRouter } from '@/app/api/uploadthing/core';
-import { thumbNailType } from '@/app/(dashboard)/article/new-post/page';
+import { thumbNailType } from '@/app/(article)/article/new-post/page';
 interface UploadDropzoneProps {
   onUploadComplete: ({ name, status, url }: thumbNailType) => void;
 }
