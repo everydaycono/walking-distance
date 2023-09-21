@@ -5,6 +5,8 @@ import { Button } from '../ui/button';
 import { Loader2, X } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { articleAPI, createPostType } from '@/services/api/articleQuery';
+import { useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface ReplyCommentProps {
   replyId: number;
@@ -19,6 +21,10 @@ const ReplyComment: FC<ReplyCommentProps> = ({
   handleReplyCancel,
   handleRefetch
 }) => {
+  const { data: userData, status } = useSession();
+  const router = useRouter();
+  const pathName = usePathname();
+
   const [content, setContent] = useState('');
 
   const {
@@ -37,6 +43,12 @@ const ReplyComment: FC<ReplyCommentProps> = ({
     }
   });
 
+  const handleSignin = () => {
+    window.sessionStorage.setItem('previousPath', pathName);
+    router.push('/login');
+    return;
+  };
+
   const handleCommentReploy = () => {
     if (!articleId || content === '' || !replyId) return;
 
@@ -54,9 +66,14 @@ const ReplyComment: FC<ReplyCommentProps> = ({
           <div className="grid w-full gap-1 mt-4 mb-3">
             <Label htmlFor="message-2">message reply</Label>
             <Textarea
+              disabled={status !== 'authenticated'}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Type your message here."
+              placeholder={
+                status !== 'authenticated'
+                  ? 'Sign in to comment'
+                  : 'Type your message here.'
+              }
               id="message-2"
             />
           </div>
@@ -64,19 +81,30 @@ const ReplyComment: FC<ReplyCommentProps> = ({
             <p className="text-sm text-muted-foreground">
               Your message will be copied to the support team.
             </p>
+
             <div className="flex items-center space-x-3">
-              <Button variant={'ghost'} onClick={handleReplyCancel}>
-                <X />
-                Cancel
-              </Button>
-              <Button
-                onClick={handleCommentReploy}
-                className="py-0"
-                disabled={isLoading}
-              >
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Post Comment
-              </Button>
+              {status !== 'authenticated' ? (
+                <Button className="py-0 h-8" onClick={handleSignin}>
+                  Sign in
+                </Button>
+              ) : (
+                <>
+                  <Button variant={'ghost'} onClick={handleReplyCancel}>
+                    <X />
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleCommentReploy}
+                    className="py-0"
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Post Comment
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

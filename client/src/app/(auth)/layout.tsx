@@ -16,7 +16,17 @@ const AuthLayout: FC<layoutProps> = ({ children }) => {
   }
 
   if (status === 'authenticated') {
-    redirect('/');
+    const isPreviousPath = window.sessionStorage.getItem('previousPath');
+    if (!isPreviousPath) {
+      redirect('/');
+      return;
+    }
+
+    setTimeout(() => {
+      window.sessionStorage.removeItem('previousPath');
+    }, 0);
+    redirect(isPreviousPath);
+    return;
   }
 
   //   Only not  logged in user can access
