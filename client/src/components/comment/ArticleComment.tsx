@@ -322,12 +322,13 @@ const ArticleComment: FC<ArticleCommentProps> = ({ articleId }) => {
               {item.children.map((item) => (
                 <NestedComment
                   key={item.id}
-                  children={item}
                   userData={userData}
                   handleDeleteComment={handleDeleteComment}
                   handleUpdateComment={handleUpdateComment}
                   updateCommentLoading={updateCommentLoading}
-                />
+                >
+                  {item}
+                </NestedComment>
               ))}
             </div>
           );

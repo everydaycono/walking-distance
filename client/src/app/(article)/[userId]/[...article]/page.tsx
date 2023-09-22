@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { IArticle } from '../../types/articles.type';
 import HtmlRender from '@/components/render/HtmlRender';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
@@ -7,6 +6,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import ArticleComment from '@/components/comment/ArticleComment';
 import { isValid } from 'zod';
 import { isValidURL } from '@/utils/userImgurl';
+import { IArticle } from '@/app/(dashboard)/types/articles.type';
 interface pageProps {
   params: {
     userId: string;
@@ -50,7 +50,7 @@ const getArticle = async (articleId: string) => {
 const page: FC<pageProps> = async ({ params }) => {
   const articleData = (await getArticle(params.article[0])) as IArticle;
   return (
-    <div className="max-w-4xl mx-auto px-5">
+    <div className="max-w-4xl mx-auto px-5 mt-20">
       <h2 className="text-4xl font-extrabold dark:text-white">
         {articleData.title}
       </h2>

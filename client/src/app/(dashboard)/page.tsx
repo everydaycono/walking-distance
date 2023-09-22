@@ -17,6 +17,13 @@ async function getData() {
   }
   return res.json();
 }
+async function getCategory() {
+  const res = await fetch(`${process.env.SERVER_BASE_URL}/api/category`);
+  if (!res.ok) {
+    throw new Error('something went wrong');
+  }
+  return res.json();
+}
 
 const page: FC<pageProps> = async ({}) => {
   const data = (await getData()) as IArticle[];

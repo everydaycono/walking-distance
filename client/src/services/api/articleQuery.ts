@@ -1,4 +1,4 @@
-import { CreateArticleType } from '@/app/(dashboard)/article/new-post/article.type';
+import { CreateArticleType } from '@/app/(article)/article/new-post/article.type';
 import api, { AuthApi } from './base';
 
 const baseURL = '/api/article';
