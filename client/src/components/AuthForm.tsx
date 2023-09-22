@@ -82,7 +82,7 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
   };
 
   const handleGithubButton = () => {
-    window.location.href = 'http://localhost:8000/api/auth/social-redirect';
+    window.location.href = `${process.env.SERVER_BASE_URL}/api/auth/social-redirect`;
   };
 
   const register = () => {

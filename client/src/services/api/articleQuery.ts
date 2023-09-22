@@ -30,7 +30,31 @@ export type UpdateCommentType = {
   commentId: number;
   content: string;
 };
-
+export type ArticleType = {
+  id: string;
+  title: string;
+  content: string;
+  thumbnail: string;
+  status: string;
+  views: number;
+  likes: number;
+  isRecommended: boolean;
+  createAt: string;
+  updateAt: string;
+  category: {
+    id: string;
+    label: string;
+    createAt: string;
+    updateAt: string;
+  };
+  tags: {
+    id: string;
+    label: string;
+    createAt: string;
+    updateAt: string;
+  }[];
+  user: User;
+};
 export type DeleteCommentType = Omit<UpdateCommentType, 'content'>;
 
 export const articleAPI = {
@@ -50,6 +74,10 @@ export const articleAPI = {
       parent
     });
     return data;
+  },
+  getArticles: async () => {
+    const { data } = await api('/api/article');
+    return data as ArticleType[];
   },
   getArticleComment: async ({
     articleId
