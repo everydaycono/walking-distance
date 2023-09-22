@@ -74,16 +74,13 @@ const CategoryPage: FC<pageProps> = ({ params }) => {
                     </h4>
                   </div>
                   <Link
-                    //   href={{
-                    //     pathname: `/@${item.user.firstName}-${item.user.lastName}/${item.id}`
-                    //   }}
-                    href="/@user"
+                    href={`/article/${item.id}`}
                     className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white cursor-pointer hover:underline"
                   >
                     {item.title}
                   </Link>
                   <Link
-                    href={`/@user/${item.title}`}
+                    href={`/article/${item.id}`}
                     className="mb-3 font-normal text-gray-700 dark:text-gray-400 cursor-pointer"
                   >
                     {item.content.substring(0, 50)}...

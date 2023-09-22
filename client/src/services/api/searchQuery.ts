@@ -8,7 +8,7 @@ type TagArticle = {
   articles: Article[];
 };
 
-type Article = {
+export type Article = {
   id: string;
   title: string;
   content: string;
@@ -25,5 +25,9 @@ export const searchAPI = {
   getSearchArticleByTag: async (tag: string) => {
     const { data } = await api.get(`/api/search/article/tag?label=${tag}`);
     return data as TagArticle;
+  },
+  getSearchArticleBykeyword: async (keyword: string) => {
+    const { data } = await api.get(`/api/search/article?keyword=${keyword}`);
+    return data as Article[];
   }
 };
