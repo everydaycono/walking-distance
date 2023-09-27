@@ -22,7 +22,9 @@ jobs:
 
     - name: Build Nest.js App
       working-directory: ./server
-      run:  npm run build --if-present
+      run: |
+        yarn install  
+        yarn build --if-present
 
   # deploy
   deploy:
