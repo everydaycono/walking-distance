@@ -3,7 +3,7 @@ name: Build & Deploy to Digital Ocean
 on:
   push:
     branches:
-      - main
+      - test/actions
 
 # env
 env:
@@ -17,19 +17,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: "16"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
 
-    - name: Build Nest.js App
-      working-directory: ./server
-      run: |
-        yarn install  
-        yarn build --if-present
+      - name: Build Nest.js App
+        working-directory: ./server
+        run: |
+          yarn install  
+          yarn build --if-present
 
   # deploy
   deploy:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Set NODE_OPTIONS
         run: echo "NODE_OPTIONS='--loader ts-node/esm'" >> $GITHUB_ENV
-        
+
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} $DOCKER_REGISTRY
 
