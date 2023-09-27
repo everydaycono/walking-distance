@@ -35,10 +35,7 @@ export async function generateMetadata({
 
 const getArticle = async (articleId: string) => {
   const res = await fetch(
-    `${process.env.SERVER_BASE_URL}/api/article/${articleId}`,
-    {
-      cache: 'no-store'
-    }
+    `${process.env.SERVER_BASE_URL}/api/article/${articleId}`
   );
 
   if (!res.ok) {
