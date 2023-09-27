@@ -1,6 +1,6 @@
 // bcryptjs
 
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 interface PasswordComparisonData {
   plainPassword: string;

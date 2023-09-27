@@ -35,7 +35,7 @@
     "@types/multer": "^1.4.7",
     "@types/passport-github": "^1.1.7",
     "aws-sdk": "^2.1122.0",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.3.1",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
-    "@types/bcrypt": "^5.0.0",
+    "@types/bcryptjs": "^2.4.4",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
