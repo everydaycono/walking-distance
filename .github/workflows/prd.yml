@@ -10,6 +10,7 @@ env:
   IMAGE_NAME: wd-server
   IMAGE_TAG: latest
   DOCKER_REGISTRY: registry.digitalocean.com
+  DOCKER_REPOSITORY: walkdi
 
 jobs:
   # build
@@ -49,8 +50,8 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           cd ./server
-          docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
-          docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          docker build -t $DOCKER_REGISTRY/$DOCKER_REPOSITORY/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $DOCKER_REGISTRY/$DOCKER_REPOSITORY/$IMAGE_NAME:$IMAGE_TAG
 
       - name: SSH into DigitalOcean Droplet
         uses: appleboy/ssh-action@master
