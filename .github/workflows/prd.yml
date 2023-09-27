@@ -1,0 +1,55 @@
+name: Build & Deploy to Digital Ocean
+
+on:
+  push:
+    branches:
+      - main
+
+# env
+env:
+  IMAGE_NAME: wd-server
+  IMAGE_TAG: latest
+  DOCKER_REGISTRY: registry.digitalocean.com
+
+jobs:
+  # build
+  build:
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    steps:
+    - name: Build Nest.js App
+      working-directory: ./server
+      run:  |
+        npm ci
+        npm run build --if-present
+
+  # deploy
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Registry
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} $DOCKER_REGISTRY
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: SSH into DigitalOcean Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DIGITALOCEAN_DROPLET_IP }}  # DigitalOcean Droplet의 IP 주소
+          username: ${{ secrets.DIGITALOCEAN_SSH_USERNAME }}  # SSH로 로그인할 사용자 이름
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}  # SSH 개인 키
+
+      - name: Update Docker Compose
+        run: |
+          docker-compose down 
+          docker-compose pull 
+          docker-compose up -d --build
