@@ -40,6 +40,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set NODE_OPTIONS
+        run: echo "NODE_OPTIONS='--loader ts-node/esm'" >> $GITHUB_ENV
+        
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} $DOCKER_REGISTRY
 
