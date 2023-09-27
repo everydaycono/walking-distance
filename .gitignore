@@ -1,3 +1,4 @@
 .env
 nginx/*
-*yml
+docker-compose.ubuntu.yml
+docker-compose.dev.yml
