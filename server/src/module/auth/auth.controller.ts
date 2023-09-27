@@ -123,7 +123,7 @@ export class AuthController {
 
   // github callback
   @ApiExcludeEndpoint()
-  @Get('github-callback/')
+  @Get('github-callback')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req) {
