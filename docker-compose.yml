@@ -5,7 +5,6 @@ services:
     container_name: server
     build:
       context: ./server
-      dockerfile: prd.Dockerfile
     env_file:
       - ./server/.env.prd
     ports:

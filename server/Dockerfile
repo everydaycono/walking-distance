@@ -1,32 +1,23 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
+# Create app directory
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-  # Allow install without lockfile, so example works even without Node.js installed locally
-  else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
-  fi
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
 
-COPY src ./src
-COPY test ./test
-COPY nest-cli.json .
-COPY tsconfig.build.json .
+# Install app dependencies
+RUN yarn install
 
-# Next.js collects completely anonymous telemetry data about general usage. Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line to disable telemetry at run time
-# ENV NEXT_TELEMETRY_DISABLED 1
+COPY . .
 
-# Note: Don't expose ports here, Compose will handle that for us
+RUN yarn build
 
-# Start Next.js in development mode based on the preferred package manager
-CMD \
-  if [ -f yarn.lock ]; then yarn dev; \
-  elif [ -f package-lock.json ]; then npm run dev; \
-  elif [ -f pnpm-lock.yaml ]; then pnpm dev; \
-  else yarn dev; \
-  fi
+FROM node:18-alpine
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8000
+CMD [ "yarn", "start:prod" ]
