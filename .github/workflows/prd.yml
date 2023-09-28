@@ -62,4 +62,5 @@ jobs:
           script: | 
             docker-compose down  # 기존 컨테이너를 종료합니다.
             docker-compose pull
+            sudo systemctl stop nginx 
             docker-compose up --build -d  # 새로운 컨테이너를 빌드하고 실행합니다.
