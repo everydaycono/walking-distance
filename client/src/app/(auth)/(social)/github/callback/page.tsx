@@ -31,7 +31,7 @@ const SocialLoginCallbackPage: FC<SocialLoginCallbackPage> = (props) => {
   const getAccessToken = async (props: any) => {
     try {
       const { data } = await api(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/auth/github-callback?code=${props.searchParams.code}`
+        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/auth/github-callback?code=${code}`
       );
       const result = data as SocialLoginType;
 
