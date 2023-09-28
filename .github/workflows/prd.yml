@@ -47,9 +47,6 @@ jobs:
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} $DOCKER_REGISTRY
 
-      - name: Delete Old Image from DigitalOcean Registry
-        run: doctl registry image rm $DOCKER_REGISTRY/$DOCKER_REPOSITORY/$IMAGE_NAME:$IMAGE_TAG
-
       - name: Build and Push Docker Image
         run: |
           cd ./server
