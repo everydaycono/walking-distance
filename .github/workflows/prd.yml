@@ -47,6 +47,9 @@ jobs:
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} $DOCKER_REGISTRY
 
+      - name: Delete Old Image from DigitalOcean Registry
+        run: doctl registry image rm $DOCKER_REGISTRY/$DOCKER_REPOSITORY/$IMAGE_NAME:$IMAGE_TAG
+
       - name: Build and Push Docker Image
         run: |
           cd ./server
@@ -56,11 +59,11 @@ jobs:
       - name: SSH into DigitalOcean Droplet
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DIGITALOCEAN_DROPLET_IP }}  # DigitalOcean Droplet의 IP 주소
-          username: ${{ secrets.DIGITALOCEAN_SSH_USERNAME }}  # SSH로 로그인할 사용자 이름
-          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}  # SSH 개인 키
+          host: ${{ secrets.DIGITALOCEAN_DROPLET_IP }}  
+          username: ${{ secrets.DIGITALOCEAN_SSH_USERNAME }}  
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}  
           script: | 
-            docker-compose down  # 기존 컨테이너를 종료합니다.
+            docker-compose down  
             docker-compose pull
             sudo systemctl stop nginx 
-            docker-compose up --build -d  # 새로운 컨테이너를 빌드하고 실행합니다.
+            docker-compose up --build -d  
