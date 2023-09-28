@@ -1,6 +1,4 @@
-// bcryptjs
-
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 interface PasswordComparisonData {
   plainPassword: string;
@@ -11,9 +9,9 @@ export const passwordHash = (password: string) => {
   return bcrypt.hashSync(password, 11);
 };
 
-export const passwordCompare = async ({
+export const passwordCompare = ({
   hashedPassword,
   plainPassword
 }: PasswordComparisonData) => {
-  return await bcrypt.compareSync(plainPassword, hashedPassword);
+  return bcrypt.compareSync(plainPassword, hashedPassword);
 };
