@@ -15,5 +15,5 @@ export const passwordCompare = async ({
   hashedPassword,
   plainPassword
 }: PasswordComparisonData) => {
-  return await bcrypt.compare(plainPassword, hashedPassword);
+  return await bcrypt.compareSync(plainPassword, hashedPassword);
 };
