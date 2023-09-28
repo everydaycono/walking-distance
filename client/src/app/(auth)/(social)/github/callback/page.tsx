@@ -13,6 +13,7 @@ export type SocialLoginType = {
 };
 
 const SocialLoginCallbackPage: FC = (props) => {
+  console.log(props, 'debug oauth code');
   const router = useRouter();
   const getAccessToken = async (props: any) => {
     try {
