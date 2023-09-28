@@ -17,6 +17,10 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   }
 
   async validate(accessToken: string, _refreshToken: string, profile: Profile) {
+    console.log(process.env.GITHUB_SOCIAL_LOGIN_CALLBACK_URL, 'callback url');
+
+    console.log(profile, 'github strategy profile');
+
     return profile;
   }
 }
