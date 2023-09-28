@@ -12,8 +12,21 @@ export type SocialLoginType = {
   avatar: string;
 };
 
-const SocialLoginCallbackPage: FC = (props) => {
+type SocialLoginCallbackPage = {
+  searchParams: {
+    code: string;
+  };
+};
+
+const SocialLoginCallbackPage: FC<SocialLoginCallbackPage> = (props) => {
   console.log(props, 'debug oauth code');
+  console.log(window.location.search, 'window parameter');
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  console.log(code, 'code');
+
+  console.log(props.searchParams, 'proxy');
+
   const router = useRouter();
   const getAccessToken = async (props: any) => {
     try {
