@@ -6,7 +6,7 @@ services:
     build:
       context: ./server
     env_file:
-      - ./server/.env
+      - ./server/.env.prd
     ports:
       - 8000:8000
 

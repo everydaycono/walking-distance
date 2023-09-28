@@ -59,9 +59,7 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_DROPLET_IP }}  # DigitalOcean Droplet의 IP 주소
           username: ${{ secrets.DIGITALOCEAN_SSH_USERNAME }}  # SSH로 로그인할 사용자 이름
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}  # SSH 개인 키
-
-      - name: Update Docker Compose
-        run: |
-          docker-compose down 
-          docker-compose pull 
-          docker-compose up -d --build
+          script: | 
+            docker-compose down  # 기존 컨테이너를 종료합니다.
+            docker-compose pull
+            docker-compose up --build -d  # 새로운 컨테이너를 빌드하고 실행합니다.
