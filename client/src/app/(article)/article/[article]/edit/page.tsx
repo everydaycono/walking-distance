@@ -1,41 +1,29 @@
-import { FC } from 'react';
-import HtmlRender from '@/components/render/HtmlRender';
-import { Separator } from '@/components/ui/separator';
-import Image from 'next/image';
-import type { Metadata, ResolvingMetadata } from 'next';
-import ArticleComment from '@/components/comment/ArticleComment';
-import { isValid } from 'zod';
-import { isValidURL } from '@/utils/userImgurl';
 import { IArticle } from '@/app/(dashboard)/types/articles.type';
+import { Separator } from '@/components/ui/separator';
+import QuillWrapper from '@/components/wrapper/QuillWrapper';
+import { articleAPI } from '@/services/api/articleQuery';
+import { isValidURL } from '@/utils/userImgurl';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { FC } from 'react';
+import QuillForm from './_components/QuillForm';
+import TitleForm from './_components/TitleForm';
+import StatusForm from './_components/StatusForm';
+
 interface pageProps {
   params: {
-    userId: string;
-    article: string[];
-  };
-  searchParams: {};
-}
-
-export async function generateMetadata({
-  params
-}: pageProps): Promise<Metadata> {
-  // read route params
-  const articleId = params.article[0];
-
-  // fetch data
-  const res = await fetch(
-    `${process.env.SERVER_BASE_URL}/api/article/${articleId}`
-  );
-  const result = (await res.json()) as IArticle;
-
-  return {
-    title: `${result.title} | ${result.user.firstName} ${result.user.lastName}`,
-    description: result.content.substring(0, 150)
+    article: string;
   };
 }
 
 const getArticle = async (articleId: string) => {
   const res = await fetch(
-    `${process.env.SERVER_BASE_URL}/api/article/${articleId}`
+    `${process.env.SERVER_BASE_URL}/api/article/${articleId}`,
+    {
+      cache: 'no-cache'
+    }
   );
 
   if (!res.ok) {
@@ -44,20 +32,17 @@ const getArticle = async (articleId: string) => {
   return res.json();
 };
 
-const page: FC<pageProps> = async ({ params }) => {
-  const articleData = (await getArticle(params.article[0])) as IArticle;
+const ArticleEdit: FC<pageProps> = async ({ params }) => {
+  const articleData = (await getArticle(params.article)) as IArticle;
   return (
-    <div className="max-w-4xl mx-auto px-5 mt-20">
-      <h2 className="text-4xl font-extrabold dark:text-white">
-        {articleData.title}
-      </h2>
-
+    <div className="max-w-4xl mx-auto px-5 my-20">
+      <StatusForm articleId={params.article} status={articleData.status} />
+      <TitleForm title={articleData.title} articleId={params.article} />
       <div>
         <div className="py-3 sm:py-4">
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
               <Image
-                priority={false}
                 className="w-10 h-10 rounded-full"
                 width={40}
                 height={40}
@@ -83,7 +68,6 @@ const page: FC<pageProps> = async ({ params }) => {
           </div>
         </div>
       </div>
-
       <Separator className="my-4" />
       <div className="mx-5">
         <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
@@ -91,7 +75,6 @@ const page: FC<pageProps> = async ({ params }) => {
         </span>
       </div>
       <Separator className="my-4" />
-
       {articleData.thumbnail && (
         <div className="flex justify-center my-5">
           <Image
@@ -103,15 +86,11 @@ const page: FC<pageProps> = async ({ params }) => {
           />
         </div>
       )}
-
-      <HtmlRender html={articleData.content} />
-
+      {/* QUill */}
+      <QuillForm articleId={params.article} value={articleData.content} />
       <Separator className="my-4" />
-
-      {/* Comment */}
-      <ArticleComment articleId={articleData.id} />
     </div>
   );
 };
 
-export default page;
+export default ArticleEdit;

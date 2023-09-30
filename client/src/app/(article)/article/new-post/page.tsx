@@ -144,7 +144,7 @@ export default function Page() {
 
           {/* content quill editor */}
           <Label>Content</Label>
-          <QuillWrapper onChange={handleChange} />
+          <QuillWrapper onChange={handleChange} value={editor} />
           <div className="lg:mt-16 mt-24"></div>
 
           {/* tag input */}
