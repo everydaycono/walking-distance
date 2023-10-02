@@ -117,7 +117,7 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
             </div>
 
             {category && (
-              <div className="my-5">
+              <div className="mt-5">
                 <div className="flex items-center">
                   <p className="mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
                     {category}
@@ -128,40 +128,41 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
                 </div>
               </div>
             )}
+
             {pathname.split('/')[1] !== 'tags' && (
-              <article className="my-5">
-                <div className="inline-flex rounded-md shadow-sm" role="group">
+              <article className="mb-5">
+                <div
+                  className="w-full inline-flex mt-5 rounded-md shadow-sm"
+                  role="group"
+                >
                   {isCategoryLoading && (
                     <>
-                      <div className="animate-pulse h-[38px] w-20 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
-                      <div className="animate-pulse h-[38px] w-20 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
-                      <div className="animate-pulse h-[38px] w-20 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
-                      <div className="animate-pulse h-[38px] w-20 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
-                      <div className="animate-pulse h-[38px] w-20 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
+                      <div className="animate-pulse h-[38px] w-full inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
+                      <div className="animate-pulse h-[38px] w-full inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
+                      <div className="animate-pulse h-[38px] w-full inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
+                      <div className="animate-pulse h-[38px] w-full inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
+                      <div className="animate-pulse h-[38px] w-full inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"></div>
                     </>
                   )}
-                  {categories?.map((item, idx) => {
-                    const commonClass =
-                      'inline-flex relative justify-center items-center w-24 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white';
-                    const classNames = [
-                      commonClass,
-                      idx === 0
-                        ? 'rounded-l-sm'
-                        : idx === categories.length - 1
-                        ? 'rounded-r-sm'
-                        : 'border-t border-b'
-                    ].join(' ');
-                    return (
-                      <Link
-                        key={item.id}
-                        href={`/category/${item.label}`}
-                        type="button"
-                        className={classNames}
-                      >
-                        {item.label}
-                      </Link>
-                    );
-                  })}
+                </div>
+                <div className="bg-gray-100 w-full dark:bg-gray-800 rounded-sm">
+                  <div className="flex justify-around">
+                    {categories?.map((item, idx) => {
+                      const currentPath = category === item.label;
+                      return (
+                        <Link
+                          key={item.id}
+                          href={`/category/${item.label}`}
+                          type="button"
+                          className={`${
+                            currentPath ? 'underline' : ''
+                          } flex justify-center text-center text-lg hover:underline py-1 font-bold capitalize`}
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
               </article>
             )}
