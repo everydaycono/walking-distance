@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 // import UserProvider from '@/components/providers/useUserProvider';
 import AuthProvider from '@/components/providers/AuthProvider';
+import NextAuthProvider from '@/components/providers/NextAuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,14 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {/* 🗑️ 11일 까지 삭제 예정 */}
-          {/* <UserProvider> */}
-          <QueryProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </QueryProvider>
-          {/* </UserProvider> */}
-        </ThemeProvider>
+        <NextAuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {/* 🗑️ 11일 까지 삭제 예정 */}
+            {/* <UserProvider> */}
+            <QueryProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </QueryProvider>
+            {/* </UserProvider> */}
+          </ThemeProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

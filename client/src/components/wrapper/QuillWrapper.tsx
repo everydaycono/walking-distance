@@ -35,8 +35,13 @@ const ReactQuillBase = dynamic(
 interface QuillNoSSRWrapperProps {
   onChange: (value: string) => void;
   className?: string;
+  value: string;
 }
-const QuillWrapper: FC<QuillNoSSRWrapperProps> = ({ onChange, className }) => {
+const QuillWrapper: FC<QuillNoSSRWrapperProps> = ({
+  value,
+  onChange,
+  className
+}) => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   // const [editor, setEditor] = useState('');
   const quillRef = useRef<ReactQuill>(null);
@@ -129,13 +134,14 @@ const QuillWrapper: FC<QuillNoSSRWrapperProps> = ({ onChange, className }) => {
 
   return (
     <>
-      <div>
+      <div className="h-full">
         <ReactQuillBase
-          className="h-96"
+          className="h-[90%]]"
           onChange={onChange}
           modules={modules}
           formats={formats}
           forwardedRef={quillRef}
+          value={value}
         />
       </div>
     </>

@@ -1,5 +1,7 @@
 import { CreateArticleType } from '@/app/(article)/article/new-post/article.type';
 import api, { AuthApi } from './base';
+import { IArticle } from '@/app/(dashboard)/types/articles.type';
+import { isAxiosError } from 'axios';
 
 const baseURL = '/api/article';
 
@@ -56,6 +58,31 @@ export type ArticleType = {
   user: User;
 };
 export type DeleteCommentType = Omit<UpdateCommentType, 'content'>;
+export type myArticleType = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  avatar: any;
+  email: string;
+  role: string;
+  status: string;
+  type: string;
+  refreshToken: string;
+  isEmailVerified: boolean;
+  emailVerificationToken: string;
+  emailVerificationExpiry: string;
+  createAt: string;
+  updateAt: string;
+  articles: Omit<ArticleType, 'category' | 'tags' | 'user'>[];
+};
+
+export type updateArticleType = {
+  title?: string;
+  content?: string;
+  status?: string;
+  category?: string;
+};
 
 export const articleAPI = {
   // create article
@@ -79,6 +106,14 @@ export const articleAPI = {
     const { data } = await api('/api/article');
     return data as ArticleType[];
   },
+  getArticle: async (articleId: string) => {
+    const { data } = await api(`/api/article/${articleId}`);
+    return data as IArticle;
+  },
+  getMyArticles: async () => {
+    const { data } = await AuthApi('/api/user/my/articles');
+    return data as myArticleType[];
+  },
   getArticleComment: async ({
     articleId
   }: Pick<createPostType, 'articleId'>) => {
@@ -93,6 +128,29 @@ export const articleAPI = {
   },
   deleteComment: async ({ commentId }: DeleteCommentType) => {
     const { data } = await AuthApi.delete(`/api/comment/${commentId}`);
+    return data;
+  },
+  updateArticle: async (articleId: string, payload: updateArticleType) => {
+    try {
+      const { category, title, content, status } = payload;
+      if (!category && !title && !content && !status) {
+        throw new Error('Invalid payload');
+      }
+      const { data } = await AuthApi.patch(
+        `/api/article/${articleId}`,
+        payload
+      );
+      return data;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        throw error.response?.data;
+      }
+      //@ts-ignore
+      throw error?.message || 'something went wrong';
+    }
+  },
+  deleteArticle: async (articleId: string) => {
+    const { data } = await AuthApi.delete(`/api/article/${articleId}`);
     return data;
   }
 };
