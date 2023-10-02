@@ -1,6 +1,7 @@
 'use client';
 import Navbar from '@/components/layout/Navbar';
 import { Separator } from '@/components/ui/separator';
+import { articleAPI } from '@/services/api/articleQuery';
 import { categoryAPI } from '@/services/api/categoryQuery';
 import { useQuery } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
@@ -21,6 +22,14 @@ const pathNameFunction = (pathName: string) => {
   }
   return pathName;
 };
+
+const tagList = [
+  { id: 1, label: 'running', path: 'running' },
+  { id: 2, label: 'dog', path: 'dog' },
+  { id: 3, label: 'tech', path: 'tech' },
+  { id: 4, label: 'health', path: 'health' },
+  { id: 5, label: 'travel', path: 'travel' }
+];
 const DashboardLayout: FC<layoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [category, setCategory] = useState('');
@@ -36,6 +45,15 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
     onError: (err) => {
       console.log(err, 'ERR');
     }
+  });
+
+  const {
+    data: recommendArticles,
+    error: recommendArticlesError,
+    isLoading
+  } = useQuery({
+    queryKey: ['articles'],
+    queryFn: () => articleAPI.getArticles()
   });
 
   useEffect(() => {
@@ -168,7 +186,7 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
             )}
             {children}
           </div>
-          <div className="min-w-80 md:block hidden">
+          <div className="md:block hidden min-w-fit">
             <div className="bg-white border border-gray-200 rounded-lg shadow sm:px-4 sm:py-8 dark:bg-gray-800 dark:border-gray-700">
               <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
                 Reommend Articles
@@ -177,12 +195,15 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
               <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
 
               <ul>
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem ipsum dolor sit amet.</li>
+                {recommendArticles?.map((item) => {
+                  return (
+                    <div key={item.id} className="underline cursor-pointer">
+                      <Link href={`/article/${item.id}`} key={item.id}>
+                        {item.title}
+                      </Link>
+                    </div>
+                  );
+                })}
               </ul>
             </div>
 
@@ -194,39 +215,19 @@ const DashboardLayout: FC<layoutProps> = ({ children }) => {
 
               <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
 
-              <ul className="flex flex-wrap">
-                <li>
-                  <Link
-                    href={'/tags/123'}
-                    className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
-                  >
-                    123
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={'/tags/running'}
-                    className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
-                  >
-                    Running
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={'/tags/runday'}
-                    className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
-                  >
-                    Runday
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={'/tags/tech'}
-                    className="bg-gray-100 whitespace-pre-wrap text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
-                  >
-                    Tech
-                  </Link>
-                </li>
+              <ul className="flex flex-wrap max-w-[200px]">
+                {tagList.map((item) => {
+                  return (
+                    <li key={item.id}>
+                      <Link
+                        href={`/tags/${item.path}`}
+                        className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
