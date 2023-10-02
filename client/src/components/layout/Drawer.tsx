@@ -6,6 +6,7 @@ import {
   Home,
   LayoutList,
   LogOut,
+  User,
   UserPlus
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -25,8 +26,9 @@ const noLoginDrawerList = [
 
 const loginDrawerList = [
   { id: 1, icon: <Home />, name: 'Home', path: '/' },
-  { id: 2, icon: <LayoutList />, name: 'My page', path: '/users/me' },
-  { id: 3, icon: <FilePlus2 />, name: 'New post', path: '/article/new-post' }
+  { id: 2, icon: <LayoutList />, name: 'My article', path: '/users/me' },
+  { id: 3, icon: <User />, name: 'Profile', path: '/users/me/edit' },
+  { id: 4, icon: <FilePlus2 />, name: 'New post', path: '/article/new-post' }
 ];
 
 const Drawer: FC<DrawerProps> = ({ isDrawerOpen, handleDrawerClose }) => {

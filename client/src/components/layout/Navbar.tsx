@@ -3,17 +3,26 @@ import { useTheme } from 'next-themes';
 import { useSession } from 'next-auth/react';
 import { Switch } from '@/components/ui/switch';
 import Avatar from '../Avatar';
-import { Moon, PenSquare, Search, SunMoon } from 'lucide-react';
+import {
+  Loader,
+  Loader2,
+  Moon,
+  PenSquare,
+  Search,
+  SunMoon
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import ArticleSearchModal from '../modal/ArticleSearchModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Drawer from './Drawer';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const { data, status: loginStatus } = useSession();
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -23,6 +32,36 @@ const Navbar = () => {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      const isCommandK = event.metaKey && event.key === 'k';
+      const isCommandM = event.metaKey && event.key === 'm';
+      const isCommandB = event.metaKey && event.key === 'b';
+
+      // 검색 모달창
+      if (isCommandK) {
+        setModalOpen(true);
+      }
+
+      if (loginStatus !== 'authenticated') return;
+      // article 생성.
+      if (isCommandM) {
+        router.push('/article/new-post');
+      }
+      if (isCommandB) {
+        router.push('/users/me');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      // 컴포넌트가 언마운트될 때 리스너 제거
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
   return (
     <>
       <ArticleSearchModal open={isModalOpen} toggleModal={toggleModal} />
@@ -123,15 +162,14 @@ const Navbar = () => {
 
               {/* USER STATE */}
               {loginStatus === 'loading' ? (
-                <svg
-                  className="w-8 h-8 text-gray-200 dark:text-gray-700 mr-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
-                </svg>
+                <div className="flex items-center">
+                  <div className="w-9 h-9 bg-gray-500 rounded-full flex items-center justify-center">
+                    <Loader2
+                      className="animate-spin duration-1000"
+                      color="white"
+                    />
+                  </div>
+                </div>
               ) : loginStatus === 'unauthenticated' ? (
                 <Avatar />
               ) : (
