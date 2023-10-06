@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   Keyboard,
+  LayoutList,
   LogOut,
   Mail,
   MessageSquare,
@@ -45,13 +46,21 @@ const Avatar: FC<AvatarProps> = ({ user, loading = false }) => {
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="bg-gray-500 rounded-full p-2 ml-4">
-              {user?.avatar ? (
-                <User size={20} color="red" />
-              ) : (
-                <User size={20} />
-              )}
-            </div>
+            {user?.avatar ? (
+              <div className="bg-gray-500 rounded-full ml-4">
+                <img
+                  src={user?.avatar}
+                  alt={user?.firstName}
+                  className="w-9 h-9 rounded-full  border-2 border-gray-300 dark:border-white"
+                />
+              </div>
+            ) : (
+              <div className="bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center ml-4 cursor-pointer">
+                <h5 className="flex justify-center items-center font-bold">
+                  {user.firstName[0].toUpperCase()}
+                </h5>
+              </div>
+            )}
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
@@ -73,56 +82,26 @@ const Avatar: FC<AvatarProps> = ({ user, loading = false }) => {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuItem asChild>
+                <Link href={'/users/me/edit'}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <PenSquare className="mr-2 h-4 w-4" />
-                <span>New Post</span>
-                <DropdownMenuShortcut>⌘+P</DropdownMenuShortcut>
+              <DropdownMenuItem asChild>
+                <Link href={'/users/me'}>
+                  <LayoutList className="mr-2 h-4 w-4" />
+                  <span>My article</span>
+                  <DropdownMenuShortcut>⌘+B</DropdownMenuShortcut>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              <DropdownMenuItem asChild>
+                <Link href={'/article/new-post'}>
+                  <PenSquare className="mr-2 h-4 w-4" />
+                  <span>New Post</span>
+                  <DropdownMenuShortcut>⌘+P</DropdownMenuShortcut>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Keyboard className="mr-2 h-4 w-4" />
-                <span>Keyboard shortcuts</span>
-                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Users className="mr-2 h-4 w-4" />
-                <span>Team</span>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  <span>Invite users</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <Mail className="mr-2 h-4 w-4" />
-                      <span>Email</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <MessageSquare className="mr-2 h-4 w-4" />
-                      <span>Message</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      <span>More...</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut()}>
