@@ -31,16 +31,14 @@ async function bootstrap() {
   );
 
   //  Initialize Swagger and APP
-  if (process.env.NODE_ENV !== 'prd') {
-    const swaggerConfig = new DocumentBuilder()
-      .setTitle('Walking Distance')
-      .setDescription('Walking Distance API Document')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    const document = SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api-docs', app, document);
-  }
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Walking Distance')
+    .setDescription('Walking Distance API Document')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api-docs', app, document);
 
   // Listen to port
   await app.listen(process.env.PORT);
