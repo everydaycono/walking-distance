@@ -82,8 +82,6 @@ export class AuthController {
   //   type: AuthDTO.Request.LoginUserDto
   // })
   socialLogin(@Body() user: Pick<User, 'email' | 'id' | 'avatar' | 'type'>) {
-    console.log(user, 'social login user');
-
     return this.authService.socialLogin(user);
   }
 
@@ -129,8 +127,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req) {
-    console.log(req.user, 'github callback req user');
-
     const { user } = req as {
       user: {
         id: string;
