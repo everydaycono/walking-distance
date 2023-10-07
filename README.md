@@ -138,7 +138,7 @@ WalkDi는 다음과 같은 주요 기능을 제공하여 사용자들의 건강�
 ## 5. 어플리케이션 로컬 환경 실행
 1. docker 환경을 다운받아 docker로 mysql을 사용하거나 
 local mysql을 사용합니다.
-<br/>
+
 2. git clone
     ```
     git clone https://github.com/everydaycono/walking-distance
