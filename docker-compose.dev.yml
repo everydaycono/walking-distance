@@ -1,21 +1,5 @@
 version: '3.8'
 services:
-  # server
-  server:
-    container_name: server
-    build:
-      context: ./server
-      dockerfile: prd.Dockerfile
-    depends_on:
-      - mysql
-    env_file:
-      - ./server/.env.dev
-
-    volumes:
-      - /usr/src/app/node_modules
-    ports:
-      - 8000:8000
-
   # mysql
   mysql:
     image: mysql:8.0
